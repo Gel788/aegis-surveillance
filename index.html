@@ -1,0 +1,1583 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AEGIS • Advanced Surveillance System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #0a0e14;
+            --bg-elevated: #0f1419;
+            --panel: #151a21;
+            --panel-hover: #1a1f27;
+            --border: #1f2633;
+            --border-light: #2a3441;
+            --accent: #00d4ff;
+            --accent-glow: rgba(0, 212, 255, 0.3);
+            --accent-dim: #00a8cc;
+            --text: #e6edf3;
+            --text-dim: #8b949e;
+            --text-muted: #6e7681;
+            --alert: #ff4757;
+            --alert-glow: rgba(255, 71, 87, 0.3);
+            --success: #2ed573;
+            --success-glow: rgba(46, 213, 115, 0.3);
+            --warning: #ffa502;
+            --warning-glow: rgba(255, 165, 2, 0.3);
+            --purple: #a55eea;
+            --blue: #4b7bec;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 13px;
+            height: 100vh;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Header */
+        .header {
+            height: 56px;
+            background: var(--bg-elevated);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 28px;
+            backdrop-filter: blur(10px);
+            position: relative;
+            z-index: 100;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            opacity: 0.3;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logo {
+            font-size: 18px;
+            font-weight: 800;
+            letter-spacing: 6px;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--purple) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        .classification {
+            font-size: 10px;
+            padding: 4px 12px;
+            background: linear-gradient(135deg, rgba(255, 71, 87, 0.2) 0%, rgba(255, 71, 87, 0.1) 100%);
+            color: var(--alert);
+            border: 1px solid var(--alert);
+            border-radius: 4px;
+            letter-spacing: 2px;
+            font-weight: 600;
+            box-shadow: 0 0 10px var(--alert-glow);
+        }
+
+        .search-bar {
+            flex: 1;
+            max-width: 400px;
+            margin: 0 40px;
+            position: relative;
+        }
+
+        .search-bar input {
+            width: 100%;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 10px 16px 10px 40px;
+            color: var(--text);
+            font-size: 13px;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+
+        .search-bar::before {
+            content: '🔍';
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 14px;
+            opacity: 0.5;
+        }
+
+        .status-bar {
+            display: flex;
+            gap: 28px;
+            font-size: 12px;
+            color: var(--text-dim);
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 12px;
+            background: var(--panel);
+            border-radius: 6px;
+            border: 1px solid var(--border);
+        }
+
+        .indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success);
+            box-shadow: 0 0 12px var(--success-glow);
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.95); }
+        }
+
+        /* Workspace */
+        .workspace {
+            display: grid;
+            grid-template-columns: 280px 1fr 360px;
+            height: calc(100vh - 56px);
+            gap: 0;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: var(--bg-elevated);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .target-info {
+            padding: 24px;
+            border-bottom: 1px solid var(--border);
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.05) 0%, transparent 100%);
+        }
+
+        .target-label {
+            font-size: 10px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .target-name {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            background: linear-gradient(135deg, var(--text) 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .target-meta {
+            font-size: 12px;
+            color: var(--text-dim);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .device-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1px;
+            background: var(--border);
+            margin-top: 16px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .stat {
+            background: var(--panel);
+            padding: 14px;
+            transition: all 0.2s;
+        }
+
+        .stat:hover {
+            background: var(--panel-hover);
+        }
+
+        .stat-label {
+            font-size: 9px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 6px;
+            letter-spacing: 1px;
+        }
+
+        .stat-value {
+            font-size: 13px;
+            color: var(--accent);
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Navigation */
+        .nav-menu {
+            flex: 1;
+            padding: 20px 16px;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .nav-section {
+            margin-bottom: 28px;
+        }
+
+        .nav-title {
+            font-size: 10px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+            padding-left: 14px;
+            font-weight: 700;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 11px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 4px;
+            border: 1px solid transparent;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: var(--accent);
+            transform: scaleY(0);
+            transition: transform 0.2s;
+        }
+
+        .nav-item:hover {
+            background: var(--panel);
+            border-color: var(--border-light);
+            transform: translateX(2px);
+        }
+
+        .nav-item.active {
+            background: linear-gradient(90deg, rgba(0, 212, 255, 0.1) 0%, transparent 100%);
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .nav-item.active::before {
+            transform: scaleY(1);
+        }
+
+        .nav-icon {
+            font-size: 18px;
+            width: 20px;
+            text-align: center;
+            filter: grayscale(0.5);
+            transition: filter 0.2s;
+        }
+
+        .nav-item.active .nav-icon,
+        .nav-item:hover .nav-icon {
+            filter: grayscale(0);
+        }
+
+        .nav-text {
+            flex: 1;
+            font-weight: 500;
+        }
+
+        .nav-badge {
+            font-size: 10px;
+            padding: 3px 8px;
+            background: var(--accent);
+            color: var(--bg);
+            border-radius: 12px;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .nav-badge.alert {
+            background: var(--alert);
+            color: white;
+            animation: badgePulse 2s infinite;
+        }
+
+        @keyframes badgePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* Main Content */
+        .main {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background: var(--bg);
+        }
+
+        .toolbar {
+            height: 60px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            background: var(--bg-elevated);
+        }
+
+        .tabs {
+            display: flex;
+            gap: 6px;
+        }
+
+        .tab {
+            padding: 9px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            color: var(--text-dim);
+            transition: all 0.2s;
+            font-weight: 500;
+            border: 1px solid transparent;
+        }
+
+        .tab:hover {
+            color: var(--text);
+            background: var(--panel);
+            border-color: var(--border);
+        }
+
+        .tab.active {
+            color: var(--accent);
+            background: rgba(0, 212, 255, 0.1);
+            border-color: var(--accent);
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 9px 18px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background: var(--panel);
+            color: var(--text);
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+            font-family: inherit;
+        }
+
+        .btn:hover {
+            border-color: var(--border-light);
+            background: var(--panel-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn.primary {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--blue) 100%);
+            border-color: var(--accent);
+            color: white;
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        .btn.primary:hover {
+            box-shadow: 0 0 30px var(--accent-glow);
+            transform: translateY(-2px);
+        }
+
+        .btn.alert {
+            color: var(--alert);
+            border-color: var(--alert);
+        }
+
+        .btn.alert:hover {
+            background: rgba(255, 71, 87, 0.1);
+            box-shadow: 0 0 20px var(--alert-glow);
+        }
+
+        /* Content */
+        .content {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .panel {
+            display: none !important;
+            height: 100%;
+            flex-direction: column;
+        }
+
+        .panel.active {
+            display: flex !important;
+        }
+
+        /* Dashboard */
+        .dashboard {
+            padding: 24px;
+            overflow-y: auto;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .metric-card {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent), var(--purple));
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .metric-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        }
+
+        .metric-card:hover::before {
+            opacity: 1;
+        }
+
+        .metric-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            letter-spacing: 1px;
+        }
+
+        .metric-value {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--text);
+            margin-bottom: 8px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .metric-change {
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .metric-change.up {
+            color: var(--success);
+        }
+
+        .metric-change.down {
+            color: var(--alert);
+        }
+
+        /* Chart Container */
+        .chart-container {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .chart-title {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .chart-canvas {
+            width: 100%;
+            height: 200px;
+            position: relative;
+        }
+
+        /* Inspector */
+        .inspector {
+            background: var(--bg-elevated);
+            border-left: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .monitor {
+            border-bottom: 1px solid var(--border);
+        }
+
+        .monitor-header {
+            padding: 16px 20px;
+            background: var(--panel);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .monitor-title {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 700;
+        }
+
+        .monitor-badge {
+            font-size: 10px;
+            padding: 3px 10px;
+            background: var(--success);
+            color: white;
+            border-radius: 6px;
+            font-weight: 700;
+        }
+
+        .monitor-content {
+            padding: 20px;
+            max-height: 220px;
+            overflow-y: auto;
+        }
+
+        .monitor-stat {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 14px;
+            font-size: 13px;
+        }
+
+        .monitor-label {
+            color: var(--text-dim);
+        }
+
+        .monitor-value {
+            color: var(--text);
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+        }
+
+        /* Activity Log */
+        .activity-log {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .log-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--panel);
+        }
+
+        .log-title {
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .log-filter {
+            font-size: 11px;
+            padding: 6px 12px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .log-filter:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .log-entries {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .log-entry {
+            margin-bottom: 14px;
+            padding: 12px 14px;
+            background: var(--panel);
+            border-left: 3px solid var(--border);
+            border-radius: 6px;
+            font-size: 12px;
+            transition: all 0.2s;
+            animation: slideInRight 0.3s ease;
+        }
+
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .log-entry:hover {
+            background: var(--panel-hover);
+        }
+
+        .log-entry.info {
+            border-left-color: var(--accent);
+        }
+
+        .log-entry.warning {
+            border-left-color: var(--warning);
+        }
+
+        .log-entry.alert {
+            border-left-color: var(--alert);
+            box-shadow: 0 0 20px var(--alert-glow);
+        }
+
+        .log-entry-time {
+            font-size: 10px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .log-entry-text {
+            line-height: 1.6;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--border-light);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Loading */
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid var(--border);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="brand">
+            <div class="logo">AEGIS</div>
+            <div class="classification">CONFIDENTIAL</div>
+        </div>
+        <div class="search-bar">
+            <input type="text" placeholder="Поиск данных, событий, файлов...">
+        </div>
+        <div class="status-bar">
+            <div class="status-item">
+                <span class="indicator"></span>
+                <span>Система активна</span>
+            </div>
+            <div class="status-item">
+                <span>ADM-01</span>
+            </div>
+            <div class="status-item">
+                <span id="current-time">--:--:--</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Workspace -->
+    <div class="workspace">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="target-info">
+                <div class="target-label">Цель</div>
+                <div class="target-name">Иванов Алексей М.</div>
+                <div class="target-meta">TGT-47293-2026</div>
+                <div class="device-stats">
+                    <div class="stat">
+                        <div class="stat-label">Устройство</div>
+                        <div class="stat-value">iPhone 14 Pro</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">ОС</div>
+                        <div class="stat-value">iOS 17.2.1</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">Сеть</div>
+                        <div class="stat-value">5G • 87%</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-label">Батарея</div>
+                        <div class="stat-value">73%</div>
+                    </div>
+                </div>
+            </div>
+
+            <nav class="nav-menu">
+                <div class="nav-section">
+                    <div class="nav-title">Обзор</div>
+                    <div class="nav-item active" data-panel="dashboard">
+                        <div class="nav-icon">📊</div>
+                        <div class="nav-text">Дашборд</div>
+                    </div>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-title">Коммуникации</div>
+                    <div class="nav-item" data-panel="communications">
+                        <div class="nav-icon">💬</div>
+                        <div class="nav-text">Сообщения</div>
+                        <div class="nav-badge">24</div>
+                    </div>
+                    <div class="nav-item" data-panel="calls">
+                        <div class="nav-icon">📞</div>
+                        <div class="nav-text">Звонки</div>
+                        <div class="nav-badge">156</div>
+                    </div>
+                    <div class="nav-item" data-panel="contacts">
+                        <div class="nav-icon">👤</div>
+                        <div class="nav-text">Контакты</div>
+                        <div class="nav-badge">89</div>
+                    </div>
+                    <div class="nav-item" data-panel="email">
+                        <div class="nav-icon">📧</div>
+                        <div class="nav-text">Почта</div>
+                        <div class="nav-badge">47</div>
+                    </div>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-title">Слежение</div>
+                    <div class="nav-item" data-panel="surveillance">
+                        <div class="nav-icon">📷</div>
+                        <div class="nav-text">Камеры</div>
+                    </div>
+                    <div class="nav-item" data-panel="gallery">
+                        <div class="nav-icon">🖼️</div>
+                        <div class="nav-text">Галерея</div>
+                        <div class="nav-badge">342</div>
+                    </div>
+                    <div class="nav-item" data-panel="audio">
+                        <div class="nav-icon">🎤</div>
+                        <div class="nav-text">Микрофон</div>
+                    </div>
+                    <div class="nav-item" data-panel="tracking">
+                        <div class="nav-icon">📍</div>
+                        <div class="nav-text">GPS</div>
+                    </div>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-title">Данные</div>
+                    <div class="nav-item" data-panel="keylogger">
+                        <div class="nav-icon">⌨️</div>
+                        <div class="nav-text">Кейлоггер</div>
+                        <div class="nav-badge alert">LIVE</div>
+                    </div>
+                    <div class="nav-item" data-panel="files">
+                        <div class="nav-icon">📁</div>
+                        <div class="nav-text">Файлы</div>
+                        <div class="nav-badge">1247</div>
+                    </div>
+                    <div class="nav-item" data-panel="browser">
+                        <div class="nav-icon">🌐</div>
+                        <div class="nav-text">Браузер</div>
+                        <div class="nav-badge">93</div>
+                    </div>
+                    <div class="nav-item" data-panel="apps">
+                        <div class="nav-icon">📲</div>
+                        <div class="nav-text">Приложения</div>
+                    </div>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-title">Безопасность</div>
+                    <div class="nav-item" data-panel="credentials">
+                        <div class="nav-icon">🔑</div>
+                        <div class="nav-text">Пароли</div>
+                        <div class="nav-badge">47</div>
+                    </div>
+                    <div class="nav-item" data-panel="banking">
+                        <div class="nav-icon">💳</div>
+                        <div class="nav-text">Банки</div>
+                        <div class="nav-badge">4</div>
+                    </div>
+                    <div class="nav-item" data-panel="crypto">
+                        <div class="nav-icon">₿</div>
+                        <div class="nav-text">Крипто</div>
+                        <div class="nav-badge">2</div>
+                    </div>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main">
+            <div class="toolbar">
+                <div class="tabs">
+                    <div class="tab active">Реал-тайм</div>
+                    <div class="tab">История</div>
+                    <div class="tab">Аналитика</div>
+                    <div class="tab">Отчеты</div>
+                </div>
+                <div class="actions">
+                    <button class="btn">
+                        <span class="loading" style="display: none;"></span>
+                        <span class="btn-text">Экспорт</span>
+                    </button>
+                    <button class="btn alert">🚨 Тревога</button>
+                    <button class="btn primary">⏺ Запись</button>
+                </div>
+            </div>
+
+            <div class="content">
+                <!-- Dashboard Panel -->
+                <div class="panel dashboard active" id="dashboard">
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-label">Перехвачено сообщений</div>
+                            <div class="metric-value">2,847</div>
+                            <div class="metric-change up">↑ 12% за 24ч</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Активность звонков</div>
+                            <div class="metric-value">156</div>
+                            <div class="metric-change up">↑ 8% за 24ч</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">GPS локаций</div>
+                            <div class="metric-value">47</div>
+                            <div class="metric-change">→ Стабильно</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Извлечено файлов</div>
+                            <div class="metric-value">1,247</div>
+                            <div class="metric-change up">↑ 24% за 24ч</div>
+                        </div>
+                    </div>
+
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <div class="chart-title">Активность за 24 часа</div>
+                            <div style="display: flex; gap: 16px; font-size: 11px;">
+                                <span style="color: var(--accent);">● Сообщения</span>
+                                <span style="color: var(--success);">● Звонки</span>
+                                <span style="color: var(--warning);">● Локации</span>
+                            </div>
+                        </div>
+                        <canvas id="activityChart" style="width: 100%; height: 200px;"></canvas>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                        <div class="chart-container">
+                            <div class="chart-header">
+                                <div class="chart-title">Топ контакты</div>
+                            </div>
+                            <div id="topContacts" style="display: flex; flex-direction: column; gap: 12px;"></div>
+                        </div>
+
+                        <div class="chart-container">
+                            <div class="chart-header">
+                                <div class="chart-title">Недавние события</div>
+                            </div>
+                            <div id="recentEvents" style="display: flex; flex-direction: column; gap: 12px;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Communications Panel -->
+                <div class="panel" id="communications">
+                    <div style="display: flex; height: 100%;">
+                        <div style="width: 320px; border-right: 1px solid var(--border); overflow-y: auto;">
+                            <div style="padding: 20px; border-bottom: 1px solid var(--border);">
+                                <input type="text" placeholder="Поиск в сообщениях..." style="width: 100%; background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; color: var(--text); font-size: 13px; font-family: inherit;">
+                            </div>
+                            <div class="thread-list">
+                                <div class="thread active" data-thread="1">
+                                    <div style="display: flex; gap: 12px; padding: 14px 16px; cursor: pointer; border-bottom: 1px solid var(--border); transition: all 0.2s;">
+                                        <div style="width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--purple)); display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">МС</div>
+                                        <div style="flex: 1; min-width: 0;">
+                                            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                                                <span style="font-weight: 600;">Мария Смирнова</span>
+                                                <span style="font-size: 11px; color: var(--text-dim);">14:32</span>
+                                            </div>
+                                            <div style="font-size: 13px; color: var(--text-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Встретимся завтра в 15:00?</div>
+                                            <div style="margin-top: 4px; font-size: 11px; color: var(--accent);">WhatsApp</div>
+                                        </div>
+                                        <div style="width: 20px; height: 20px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700;">3</div>
+                                    </div>
+                                </div>
+                                <div class="thread" data-thread="2">
+                                    <div style="display: flex; gap: 12px; padding: 14px 16px; cursor: pointer; border-bottom: 1px solid var(--border); transition: all 0.2s;">
+                                        <div style="width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, var(--success), var(--blue)); display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">ДП</div>
+                                        <div style="flex: 1; min-width: 0;">
+                                            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                                                <span style="font-weight: 600;">Дмитрий Петров</span>
+                                                <span style="font-size: 11px; color: var(--text-dim);">13:15</span>
+                                            </div>
+                                            <div style="font-size: 13px; color: var(--text-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Документы готовы, проверь</div>
+                                            <div style="margin-top: 4px; font-size: 11px; color: var(--blue);">Telegram</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="thread" data-thread="3">
+                                    <div style="display: flex; gap: 12px; padding: 14px 16px; cursor: pointer; border-bottom: 1px solid var(--border); transition: all 0.2s;">
+                                        <div style="width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, var(--warning), var(--alert)); display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;">ЕК</div>
+                                        <div style="flex: 1; min-width: 0;">
+                                            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                                                <span style="font-weight: 600;">Елена Короткова</span>
+                                                <span style="font-size: 11px; color: var(--text-dim);">12:48</span>
+                                            </div>
+                                            <div style="font-size: 13px; color: var(--text-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Перезвони когда сможешь</div>
+                                            <div style="margin-top: 4px; font-size: 11px; color: var(--success);">SMS</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="flex: 1; display: flex; flex-direction: column;">
+                            <div style="padding: 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--panel);">
+                                <div style="display: flex; align-items: center; gap: 14px;">
+                                    <div style="width: 42px; height: 42px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--purple)); display: flex; align-items: center; justify-content: center; font-weight: 700;">МС</div>
+                                    <div>
+                                        <div style="font-weight: 600; margin-bottom: 2px;">Мария Смирнова</div>
+                                        <div style="font-size: 12px; color: var(--success); display: flex; align-items: center; gap: 6px;"><span class="indicator" style="width: 6px; height: 6px;"></span> Онлайн</div>
+                                    </div>
+                                </div>
+                                <div style="display: flex; gap: 8px;">
+                                    <button class="btn" style="padding: 8px 12px;">📞</button>
+                                    <button class="btn" style="padding: 8px 12px;">🔍</button>
+                                    <button class="btn" style="padding: 8px 12px;">⋮</button>
+                                </div>
+                            </div>
+                            <div style="flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 16px;">
+                                <div style="align-self: flex-start; max-width: 70%;">
+                                    <div style="background: var(--panel); border: 1px solid var(--border); padding: 14px 16px; border-radius: 12px; border-bottom-left-radius: 4px; margin-bottom: 6px;">
+                                        <div style="line-height: 1.5;">Привет! Как дела с проектом?</div>
+                                    </div>
+                                    <div style="font-size: 11px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace;">14:28</div>
+                                </div>
+                                <div style="align-self: flex-end; max-width: 70%;">
+                                    <div style="background: linear-gradient(135deg, var(--accent), var(--blue)); padding: 14px 16px; border-radius: 12px; border-bottom-right-radius: 4px; margin-bottom: 6px;">
+                                        <div style="line-height: 1.5; color: white;">Все отлично, почти закончил. Завтра покажу результаты.</div>
+                                    </div>
+                                    <div style="font-size: 11px; color: var(--text-dim); text-align: right; font-family: 'JetBrains Mono', monospace;">14:29 • ✓✓</div>
+                                </div>
+                                <div style="align-self: flex-start; max-width: 70%;">
+                                    <div style="background: var(--panel); border: 1px solid var(--border); padding: 14px 16px; border-radius: 12px; border-bottom-left-radius: 4px; margin-bottom: 6px;">
+                                        <div style="line-height: 1.5; margin-bottom: 10px;">Отлично! Встретимся завтра в 15:00?</div>
+                                        <div style="background: var(--bg); padding: 10px 12px; border-radius: 8px; display: flex; align-items: center; gap: 10px; border: 1px solid var(--border);">
+                                            <span style="font-size: 24px;">📄</span>
+                                            <div style="flex: 1;">
+                                                <div style="font-size: 12px; font-weight: 600;">договор_final.pdf</div>
+                                                <div style="font-size: 11px; color: var(--text-dim);">2.4 MB</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style="font-size: 11px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace;">14:32</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Calls Panel -->
+                <div class="panel" id="calls" style="padding: 24px; overflow-y: auto;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                        <h2 style="font-size: 24px; font-weight: 800;">📞 История звонков</h2>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn">Все</button>
+                            <button class="btn">Входящие</button>
+                            <button class="btn">Исходящие</button>
+                            <button class="btn alert">Пропущенные</button>
+                        </div>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                        <div class="call-card" style="background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 18px; cursor: pointer; transition: all 0.2s;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div style="display: flex; gap: 16px; align-items: center;">
+                                    <div style="width: 48px; height: 48px; background: var(--success); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px;">📞</div>
+                                    <div>
+                                        <div style="font-weight: 600; margin-bottom: 4px;">Мария Смирнова</div>
+                                        <div style="font-size: 12px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace;">+7 926 XXX-XX-47</div>
+                                    </div>
+                                </div>
+                                <div style="text-align: right;">
+                                    <div style="font-size: 12px; color: var(--text-dim); margin-bottom: 4px;">30 янв, 14:23</div>
+                                    <div style="font-size: 13px; color: var(--success); font-weight: 600;">Входящий • 8:43</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="call-card" style="background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 18px; cursor: pointer; transition: all 0.2s;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div style="display: flex; gap: 16px; align-items: center;">
+                                    <div style="width: 48px; height: 48px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px;">📱</div>
+                                    <div>
+                                        <div style="font-weight: 600; margin-bottom: 4px;">Дмитрий Петров</div>
+                                        <div style="font-size: 12px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace;">+7 495 XXX-XX-82</div>
+                                    </div>
+                                </div>
+                                <div style="text-align: right;">
+                                    <div style="font-size: 12px; color: var(--text-dim); margin-bottom: 4px;">30 янв, 11:15</div>
+                                    <div style="font-size: 13px; color: var(--accent); font-weight: 600;">Исходящий • 3:24</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="call-card" style="background: var(--panel); border: 1px solid var(--alert); border-radius: 12px; padding: 18px; cursor: pointer; transition: all 0.2s; box-shadow: 0 0 20px var(--alert-glow);">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div style="display: flex; gap: 16px; align-items: center;">
+                                    <div style="width: 48px; height: 48px; background: var(--alert); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px;">📵</div>
+                                    <div>
+                                        <div style="font-weight: 600; margin-bottom: 4px;">Неизвестный номер</div>
+                                        <div style="font-size: 12px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace;">+7 903 XXX-XX-19</div>
+                                    </div>
+                                </div>
+                                <div style="text-align: right;">
+                                    <div style="font-size: 12px; color: var(--text-dim); margin-bottom: 4px;">29 янв, 22:47</div>
+                                    <div style="font-size: 13px; color: var(--alert); font-weight: 600;">Пропущенный</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contacts Panel -->
+                <div class="panel" id="contacts" style="padding: 24px; overflow-y: auto;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                        <h2 style="font-size: 24px; font-weight: 800;">👤 Контакты</h2>
+                        <input type="text" placeholder="Поиск..." style="width: 300px; background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; color: var(--text); font-size: 13px;">
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+                        <div style="background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 20px; text-align: center; cursor: pointer; transition: all 0.2s;">
+                            <div style="width: 64px; height: 64px; background: linear-gradient(135deg, var(--accent), var(--purple)); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 800; margin: 0 auto 12px;">МС</div>
+                            <div style="font-weight: 600; margin-bottom: 4px;">Мария Смирнова</div>
+                            <div style="font-size: 12px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace;">+7 926 XXX-XX-47</div>
+                            <div style="margin-top: 10px; font-size: 11px; color: var(--accent);">47 взаимодействий</div>
+                        </div>
+                        <div style="background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 20px; text-align: center; cursor: pointer; transition: all 0.2s;">
+                            <div style="width: 64px; height: 64px; background: linear-gradient(135deg, var(--success), var(--blue)); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 800; margin: 0 auto 12px;">ДП</div>
+                            <div style="font-weight: 600; margin-bottom: 4px;">Дмитрий Петров</div>
+                            <div style="font-size: 12px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace;">+7 495 XXX-XX-82</div>
+                            <div style="margin-top: 10px; font-size: 11px; color: var(--accent);">32 взаимодействия</div>
+                        </div>
+                        <div style="background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 20px; text-align: center; cursor: pointer; transition: all 0.2s;">
+                            <div style="width: 64px; height: 64px; background: linear-gradient(135deg, var(--warning), var(--alert)); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 800; margin: 0 auto 12px;">ЕК</div>
+                            <div style="font-weight: 600; margin-bottom: 4px;">Елена Короткова</div>
+                            <div style="font-size: 12px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace;">+7 903 XXX-XX-19</div>
+                            <div style="margin-top: 10px; font-size: 11px; color: var(--accent);">24 взаимодействия</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Email Panel -->
+                <div class="panel" id="email" style="padding: 24px; overflow-y: auto;">
+                    <h2 style="font-size: 24px; font-weight: 800; margin-bottom: 24px;">📧 Почта</h2>
+                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                        <div style="background: var(--panel); border: 1px solid var(--accent); border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.2s; box-shadow: 0 0 20px var(--accent-glow);">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                <div style="font-weight: 700; font-size: 15px;">Сбербанк</div>
+                                <div style="font-size: 12px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace;">14:32</div>
+                            </div>
+                            <div style="font-size: 14px; font-weight: 600; margin-bottom: 8px;">Операция по карте ••4729</div>
+                            <div style="font-size: 13px; color: var(--text-dim); line-height: 1.5;">Списание 15,000.00 ₽ • Перевод Ивановой М.С.</div>
+                            <div style="margin-top: 12px; display: inline-block; padding: 4px 10px; background: var(--accent); color: white; border-radius: 6px; font-size: 10px; font-weight: 700;">НЕПРОЧИТАНО</div>
+                        </div>
+                        <div style="background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.2s;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                <div style="font-weight: 600;">Работа • HR Department</div>
+                                <div style="font-size: 12px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace;">11:23</div>
+                            </div>
+                            <div style="font-size: 14px; font-weight: 600; margin-bottom: 8px;">Re: Отчет за январь 2026</div>
+                            <div style="font-size: 13px; color: var(--text-dim); line-height: 1.5;">Спасибо за отчет. Все выглядит хорошо...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- More panels continuing... -->
+                <div class="panel" id="surveillance" style="padding: 24px; overflow-y: auto;">
+                    <h2 style="font-size: 24px; font-weight: 800; margin-bottom: 24px;">📷 Видеонаблюдение</h2>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;">
+                        <div class="feed-card" style="background: var(--panel); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; cursor: pointer; transition: all 0.2s;">
+                            <div style="aspect-ratio: 16/9; background: #000; position: relative; display: flex; align-items: center; justify-content: center;">
+                                <div style="position: absolute; top: 12px; left: 12px; font-size: 11px; color: white; font-family: 'JetBrains Mono', monospace; background: rgba(0,0,0,0.7); padding: 6px 10px; border-radius: 4px;">CAM-01 • ПЕРЕДНЯЯ</div>
+                                <div style="position: absolute; top: 12px; right: 12px; display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--alert); font-weight: 600; background: rgba(0,0,0,0.7); padding: 6px 10px; border-radius: 4px;"><div style="width: 8px; height: 8px; background: var(--alert); border-radius: 50%; animation: blink 1s infinite;"></div> REC</div>
+                                <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" style="color: rgba(255,255,255,0.1)">
+                                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                                    <circle cx="12" cy="13" r="4"></circle>
+                                </svg>
+                            </div>
+                            <div style="padding: 14px 16px; border-top: 1px solid var(--border);">
+                                <div style="font-weight: 600; margin-bottom: 4px;">Передняя камера</div>
+                                <div style="font-size: 12px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace;">1080p • 30fps • Запись активна</div>
+                            </div>
+                        </div>
+                        <div class="feed-card" style="background: var(--panel); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; cursor: pointer; transition: all 0.2s;">
+                            <div style="aspect-ratio: 16/9; background: #000; position: relative; display: flex; align-items: center; justify-content: center;">
+                                <div style="position: absolute; top: 12px; left: 12px; font-size: 11px; color: white; font-family: 'JetBrains Mono', monospace; background: rgba(0,0,0,0.7); padding: 6px 10px; border-radius: 4px;">CAM-02 • ЗАДНЯЯ</div>
+                                <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" style="color: rgba(255,255,255,0.1)">
+                                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                                    <circle cx="12" cy="13" r="4"></circle>
+                                </svg>
+                            </div>
+                            <div style="padding: 14px 16px; border-top: 1px solid var(--border);">
+                                <div style="font-weight: 600; margin-bottom: 4px;">Задняя камера</div>
+                                <div style="font-size: 12px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace;">4K • 60fps • Ожидание</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn primary">Активировать все</button>
+                        <button class="btn">Снимок</button>
+                        <button class="btn alert">Остановить</button>
+                    </div>
+                </div>
+
+                <!-- Gallery Panel -->
+                <div class="panel" id="gallery" style="padding: 24px; overflow-y: auto;">
+                    <h2 style="font-size: 24px; font-weight: 800; margin-bottom: 24px;">🖼️ Фотогалерея</h2>
+                    <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px;">
+                        <div class="photo-item" style="aspect-ratio: 1; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; cursor: pointer; position: relative; overflow: hidden; transition: all 0.2s;"><div style="position: absolute; bottom: 10px; left: 10px; font-size: 11px; color: white; background: rgba(0,0,0,0.6); padding: 4px 10px; border-radius: 6px; font-family: 'JetBrains Mono', monospace;">14:23</div></div>
+                        <div class="photo-item" style="aspect-ratio: 1; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius: 12px; cursor: pointer; position: relative; overflow: hidden; transition: all 0.2s;"><div style="position: absolute; bottom: 10px; left: 10px; font-size: 11px; color: white; background: rgba(0,0,0,0.6); padding: 4px 10px; border-radius: 6px; font-family: 'JetBrains Mono', monospace;">13:15</div></div>
+                        <div class="photo-item" style="aspect-ratio: 1; background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); border-radius: 12px; cursor: pointer; position: relative; overflow: hidden; transition: all 0.2s;"><div style="position: absolute; bottom: 10px; left: 10px; font-size: 11px; color: white; background: rgba(0,0,0,0.6); padding: 4px 10px; border-radius: 6px; font-family: 'JetBrains Mono', monospace;">12:08</div></div>
+                        <div class="photo-item" style="aspect-ratio: 1; background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); border-radius: 12px; cursor: pointer; position: relative; overflow: hidden; transition: all 0.2s;"><div style="position: absolute; bottom: 10px; left: 10px; font-size: 11px; color: white; background: rgba(0,0,0,0.6); padding: 4px 10px; border-radius: 6px; font-family: 'JetBrains Mono', monospace;">11:47</div></div>
+                        <div class="photo-item" style="aspect-ratio: 1; background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); border-radius: 12px; cursor: pointer; position: relative; overflow: hidden; transition: all 0.2s;"><div style="position: absolute; bottom: 10px; left: 10px; font-size: 11px; color: white; background: rgba(0,0,0,0.6); padding: 4px 10px; border-radius: 6px; font-family: 'JetBrains Mono', monospace;">10:23</div></div>
+                    </div>
+                </div>
+
+                <!-- Audio Panel -->
+                <div class="panel" id="audio" style="padding: 24px; overflow-y: auto;">
+                    <h2 style="font-size: 24px; font-weight: 800; margin-bottom: 24px;">🎤 Аудиомониторинг</h2>
+                    <div style="background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 20px;">
+                        <div style="display: flex; gap: 8px; align-items: flex-end; justify-content: center; height: 120px; margin-bottom: 20px;">
+                            <div style="width: 12px; background: var(--accent); border-radius: 6px; height: 40%; animation: audioBar 0.5s ease infinite alternate;"></div>
+                            <div style="width: 12px; background: var(--accent); border-radius: 6px; height: 70%; animation: audioBar 0.5s ease infinite alternate 0.1s;"></div>
+                            <div style="width: 12px; background: var(--accent); border-radius: 6px; height: 50%; animation: audioBar 0.5s ease infinite alternate 0.2s;"></div>
+                            <div style="width: 12px; background: var(--accent); border-radius: 6px; height: 90%; animation: audioBar 0.5s ease infinite alternate 0.3s;"></div>
+                            <div style="width: 12px; background: var(--accent); border-radius: 6px; height: 60%; animation: audioBar 0.5s ease infinite alternate 0.4s;"></div>
+                            <div style="width: 12px; background: var(--accent); border-radius: 6px; height: 80%; animation: audioBar 0.5s ease infinite alternate 0.5s;"></div>
+                        </div>
+                        <style>
+                            @keyframes audioBar { from { height: 20%; } to { height: 90%; } }
+                            @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+                        </style>
+                        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;">
+                            <div style="text-align: center;"><div style="font-size: 24px; font-weight: 800; color: var(--accent); font-family: 'JetBrains Mono', monospace; margin-bottom: 4px;">-24dB</div><div style="font-size: 11px; color: var(--text-dim); text-transform: uppercase;">Уровень</div></div>
+                            <div style="text-align: center;"><div style="font-size: 24px; font-weight: 800; color: var(--accent); font-family: 'JetBrains Mono', monospace; margin-bottom: 4px;">2.4kHz</div><div style="font-size: 11px; color: var(--text-dim); text-transform: uppercase;">Частота</div></div>
+                            <div style="text-align: center;"><div style="font-size: 24px; font-weight: 800; color: var(--success); font-family: 'JetBrains Mono', monospace; margin-bottom: 4px;">87%</div><div style="font-size: 11px; color: var(--text-dim); text-transform: uppercase;">Качество</div></div>
+                            <div style="text-align: center;"><div style="font-size: 24px; font-weight: 800; color: var(--warning); font-family: 'JetBrains Mono', monospace; margin-bottom: 4px;">00:24</div><div style="font-size: 11px; color: var(--text-dim); text-transform: uppercase;">Запись</div></div>
+                        </div>
+                    </div>
+                    <div style="background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 20px;">
+                        <div style="font-weight: 700; margin-bottom: 16px;">Транскрипция в реальном времени</div>
+                        <div style="display: flex; flex-direction: column; gap: 12px;">
+                            <div style="padding: 12px; background: var(--bg); border-radius: 8px; border-left: 3px solid var(--accent);"><div style="font-size: 11px; color: var(--text-dim); margin-bottom: 6px; font-family: 'JetBrains Mono', monospace;">14:28:14</div><div style="line-height: 1.6;">"Привет, как дела? Звоню по поводу встречи..."</div></div>
+                            <div style="padding: 12px; background: var(--bg); border-radius: 8px; border-left: 3px solid var(--accent);"><div style="font-size: 11px; color: var(--text-dim); margin-bottom: 6px; font-family: 'JetBrains Mono', monospace;">14:29:42</div><div style="line-height: 1.6;">"Да, конечно. Встретимся завтра в офисе."</div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- GPS Tracking Panel -->
+                <div class="panel" id="tracking">
+                    <div style="display: flex; height: 100%;">
+                        <div style="flex: 1; position: relative; background: var(--panel);">
+                            <div style="position: absolute; inset: 0; background-image: linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px); background-size: 40px 40px;"></div>
+                            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);"><div style="width: 24px; height: 24px; border: 3px solid var(--alert); border-radius: 50%; box-shadow: 0 0 0 0 var(--alert-glow); animation: markerPulse 2s infinite;"></div></div>
+                            <style>
+                                @keyframes markerPulse { 0% { box-shadow: 0 0 0 0 var(--alert-glow); } 70% { box-shadow: 0 0 0 20px rgba(255, 71, 87, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 71, 87, 0); } }
+                            </style>
+                        </div>
+                        <div style="width: 340px; border-left: 1px solid var(--border); padding: 24px; overflow-y: auto; background: var(--bg-elevated);">
+                            <h3 style="font-weight: 700; margin-bottom: 20px; font-size: 16px;">История перемещений</h3>
+                            <div style="display: flex; flex-direction: column; gap: 12px;">
+                                <div style="background: var(--panel); border: 1px solid var(--accent); border-radius: 10px; padding: 14px;"><div style="font-size: 11px; color: var(--accent); margin-bottom: 8px; font-family: 'JetBrains Mono', monospace;">14:45 • Сейчас</div><div style="font-weight: 600; margin-bottom: 4px;">ул. Тверская, 12</div><div style="font-size: 11px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace;">55.7558° N, 37.6173° E</div></div>
+                                <div style="background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 14px;"><div style="font-size: 11px; color: var(--text-dim); margin-bottom: 8px; font-family: 'JetBrains Mono', monospace;">13:20 • 1ч 25м назад</div><div style="font-weight: 600; margin-bottom: 4px;">Красная площадь</div><div style="font-size: 11px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace;">55.7539° N, 37.6208° E</div></div>
+                                <div style="background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 14px;"><div style="font-size: 11px; color: var(--text-dim); margin-bottom: 8px; font-family: 'JetBrains Mono', monospace;">11:15 • 3ч 30м назад</div><div style="font-weight: 600; margin-bottom: 4px;">м. Маяковская</div><div style="font-size: 11px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace;">55.7697° N, 37.5955° E</div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Keylogger Panel -->
+                <div class="panel" id="keylogger" style="padding: 24px; overflow-y: auto;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                        <h2 style="font-size: 24px; font-weight: 800;">⌨️ Клавиатурный шпион</h2>
+                        <div style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; background: var(--alert); color: white; border-radius: 8px; font-size: 12px; font-weight: 700;"><div class="indicator" style="width: 8px; height: 8px; background: white;"></div> LIVE</div>
+                    </div>
+                    <div id="keylogEntries" style="display: flex; flex-direction: column; gap: 12px;">
+                        <div style="background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 18px;"><div style="display: flex; justify-content: space-between; margin-bottom: 10px;"><span style="font-size: 12px; color: var(--accent); font-weight: 700;">WhatsApp</span><span style="font-size: 11px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace;">14:32:17</span></div><div style="font-family: 'JetBrains Mono', monospace; color: var(--text); line-height: 1.8; font-size: 14px;">Встретимся завтра в 15:00?</div></div>
+                        <div style="background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 18px;"><div style="display: flex; justify-content: space-between; margin-bottom: 10px;"><span style="font-size: 12px; color: var(--blue); font-weight: 700;">Safari • google.com</span><span style="font-size: 11px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace;">13:48:03</span></div><div style="font-family: 'JetBrains Mono', monospace; color: var(--text); line-height: 1.8; font-size: 14px;">купить билеты москва питер</div></div>
+                        <div style="background: var(--panel); border: 1px solid var(--alert); border-radius: 12px; padding: 18px; box-shadow: 0 0 20px var(--alert-glow);"><div style="display: flex; justify-content: space-between; margin-bottom: 10px;"><span style="font-size: 12px; color: var(--alert); font-weight: 700;">Сбербанк Онлайн</span><span style="font-size: 11px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace;">12:15:42</span></div><div style="font-family: 'JetBrains Mono', monospace; color: var(--text); line-height: 1.8; font-size: 14px;">Пароль: ••••••••••</div></div>
+                    </div>
+                </div>
+
+                <!-- Files Panel -->
+                <div class="panel" id="files" style="padding: 24px; overflow-y: auto;">
+                    <h2 style="font-size: 24px; font-weight: 800; margin-bottom: 24px;">📁 Файловый менеджер</h2>
+                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                        <div class="file-item" style="background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 16px; display: flex; gap: 16px; align-items: center; cursor: pointer; transition: all 0.2s;"><span style="font-size: 32px;">📄</span><div style="flex: 1;"><div style="font-weight: 600; margin-bottom: 4px;">договор_final.pdf</div><div style="font-size: 12px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace;">2.4 MB • 30 янв 2026</div></div><button class="btn primary" style="padding: 8px 16px;">Скачать</button></div>
+                        <div class="file-item" style="background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 16px; display: flex; gap: 16px; align-items: center; cursor: pointer; transition: all 0.2s;"><span style="font-size: 32px;">🖼️</span><div style="flex: 1;"><div style="font-weight: 600; margin-bottom: 4px;">паспорт_скан.jpg</div><div style="font-size: 12px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace;">1.8 MB • 28 янв 2026</div></div><button class="btn primary" style="padding: 8px 16px;">Скачать</button></div>
+                        <div class="file-item" style="background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 16px; display: flex; gap: 16px; align-items: center; cursor: pointer; transition: all 0.2s;"><span style="font-size: 32px;">📦</span><div style="flex: 1;"><div style="font-weight: 600; margin-bottom: 4px;">backup_2026.zip</div><div style="font-size: 12px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace;">342 MB • 25 янв 2026</div></div><button class="btn primary" style="padding: 8px 16px;">Скачать</button></div>
+                    </div>
+                </div>
+
+                <!-- Browser Panel -->
+                <div class="panel" id="browser" style="padding: 24px; overflow-y: auto;">
+                    <h2 style="font-size: 24px; font-weight: 800; margin-bottom: 24px;">🌐 История браузера</h2>
+                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                        <div style="background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 18px; cursor: pointer; transition: all 0.2s;"><div style="display: flex; gap: 16px;"><span style="font-size: 28px;">🔒</span><div style="flex: 1;"><div style="font-weight: 600; margin-bottom: 6px;">online.sberbank.ru</div><div style="font-size: 13px; color: var(--text-dim);">Сбербанк Онлайн • 14:23</div></div></div></div>
+                        <div style="background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 18px; cursor: pointer; transition: all 0.2s;"><div style="display: flex; gap: 16px;"><span style="font-size: 28px;">🔍</span><div style="flex: 1;"><div style="font-weight: 600; margin-bottom: 6px;">google.com/search</div><div style="font-size: 13px; color: var(--text-dim);">купить билеты москва питер • 13:48</div></div></div></div>
+                    </div>
+                </div>
+
+                <!-- Apps Panel -->
+                <div class="panel" id="apps" style="padding: 24px; overflow-y: auto;">
+                    <h2 style="font-size: 24px; font-weight: 800; margin-bottom: 24px;">📲 Приложения</h2>
+                    <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 20px;">
+                        <div class="app-card" style="text-align: center; cursor: pointer; transition: all 0.2s;"><div style="width: 72px; height: 72px; background: #25D366; border-radius: 16px; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; font-size: 36px; transition: all 0.2s;">💬</div><div style="font-size: 13px; font-weight: 500;">WhatsApp</div></div>
+                        <div class="app-card" style="text-align: center; cursor: pointer; transition: all 0.2s;"><div style="width: 72px; height: 72px; background: #0088cc; border-radius: 16px; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; font-size: 36px; transition: all 0.2s;">✈️</div><div style="font-size: 13px; font-weight: 500;">Telegram</div></div>
+                        <div class="app-card" style="text-align: center; cursor: pointer; transition: all 0.2s;"><div style="width: 72px; height: 72px; background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%); border-radius: 16px; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; font-size: 36px; transition: all 0.2s;">📷</div><div style="font-size: 13px; font-weight: 500;">Instagram</div></div>
+                        <div class="app-card" style="text-align: center; cursor: pointer; transition: all 0.2s;"><div style="width: 72px; height: 72px; background: #0077FF; border-radius: 16px; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; font-size: 36px; transition: all 0.2s;">🔵</div><div style="font-size: 13px; font-weight: 500;">VK</div></div>
+                        <div class="app-card" style="text-align: center; cursor: pointer; transition: all 0.2s;"><div style="width: 72px; height: 72px; background: #21A038; border-radius: 16px; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; font-size: 36px; transition: all 0.2s;">🏦</div><div style="font-size: 13px; font-weight: 500;">Сбербанк</div></div>
+                    </div>
+                </div>
+
+                <!-- Credentials Panel -->
+                <div class="panel" id="credentials" style="padding: 24px; overflow-y: auto;">
+                    <h2 style="font-size: 24px; font-weight: 800; margin-bottom: 24px;">🔑 Пароли и учетные записи</h2>
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
+                        <div style="background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.2s;"><div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px solid var(--border);"><div style="font-weight: 700; font-size: 16px;">Gmail</div><div style="font-size: 11px; padding: 4px 10px; background: var(--border); border-radius: 6px; color: var(--text-dim); font-weight: 600;">Email</div></div><div style="margin-bottom: 12px;"><div style="font-size: 11px; color: var(--text-dim); text-transform: uppercase; margin-bottom: 6px; letter-spacing: 1px;">Логин</div><div style="font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--accent); background: var(--bg); padding: 10px 14px; border-radius: 8px;">a.ivanov@gmail.com</div></div><div><div style="font-size: 11px; color: var(--text-dim); text-transform: uppercase; margin-bottom: 6px; letter-spacing: 1px;">Пароль</div><div style="font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--alert); background: var(--bg); padding: 10px 14px; border-radius: 8px;">****************</div></div></div>
+                        <div style="background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.2s;"><div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px solid var(--border);"><div style="font-weight: 700; font-size: 16px;">Telegram</div><div style="font-size: 11px; padding: 4px 10px; background: var(--border); border-radius: 6px; color: var(--text-dim); font-weight: 600;">Messenger</div></div><div style="margin-bottom: 12px;"><div style="font-size: 11px; color: var(--text-dim); text-transform: uppercase; margin-bottom: 6px; letter-spacing: 1px;">Телефон</div><div style="font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--accent); background: var(--bg); padding: 10px 14px; border-radius: 8px;">+7 926 XXX-XX-93</div></div><div><div style="font-size: 11px; color: var(--text-dim); text-transform: uppercase; margin-bottom: 6px; letter-spacing: 1px;">Код</div><div style="font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--accent); background: var(--bg); padding: 10px 14px; border-radius: 8px;">47293</div></div></div>
+                    </div>
+                </div>
+
+                <!-- Banking Panel -->
+                <div class="panel" id="banking" style="padding: 24px; overflow-y: auto;">
+                    <h2 style="font-size: 24px; font-weight: 800; margin-bottom: 24px;">💳 Банковские счета</h2>
+                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px;">
+                        <div style="background: linear-gradient(135deg, var(--success), var(--blue)); border-radius: 16px; padding: 24px; cursor: pointer; transition: all 0.2s; box-shadow: 0 8px 24px rgba(46, 213, 115, 0.2);"><div style="font-size: 12px; color: rgba(255,255,255,0.9); text-transform: uppercase; margin-bottom: 16px; font-weight: 600; letter-spacing: 1px;">Сбербанк</div><div style="font-size: 28px; font-weight: 800; color: white; margin-bottom: 12px; font-family: 'JetBrains Mono', monospace;">₽847,293</div><div style="font-size: 13px; color: rgba(255,255,255,0.8); font-family: 'JetBrains Mono', monospace;">•••• 4729</div></div>
+                        <div style="background: linear-gradient(135deg, #FFDD2D, #FFA502); border-radius: 16px; padding: 24px; cursor: pointer; transition: all 0.2s; box-shadow: 0 8px 24px rgba(255, 221, 45, 0.2);"><div style="font-size: 12px; color: rgba(0,0,0,0.7); text-transform: uppercase; margin-bottom: 16px; font-weight: 600; letter-spacing: 1px;">Тинькофф</div><div style="font-size: 28px; font-weight: 800; color: #000; margin-bottom: 12px; font-family: 'JetBrains Mono', monospace;">₽152,840</div><div style="font-size: 13px; color: rgba(0,0,0,0.6); font-family: 'JetBrains Mono', monospace;">•••• 8402</div></div>
+                        <div style="background: linear-gradient(135deg, #FF4757, #FF6348); border-radius: 16px; padding: 24px; cursor: pointer; transition: all 0.2s; box-shadow: 0 8px 24px rgba(255, 71, 87, 0.2);"><div style="font-size: 12px; color: rgba(255,255,255,0.9); text-transform: uppercase; margin-bottom: 16px; font-weight: 600; letter-spacing: 1px;">Альфа-Банк</div><div style="font-size: 28px; font-weight: 800; color: white; margin-bottom: 12px; font-family: 'JetBrains Mono', monospace;">₽47,293</div><div style="font-size: 13px; color: rgba(255,255,255,0.8); font-family: 'JetBrains Mono', monospace;">•••• 2930</div></div>
+                        <div style="background: linear-gradient(135deg, #0077FF, #00D4FF); border-radius: 16px; padding: 24px; cursor: pointer; transition: all 0.2s; box-shadow: 0 8px 24px rgba(0, 119, 255, 0.2);"><div style="font-size: 12px; color: rgba(255,255,255,0.9); text-transform: uppercase; margin-bottom: 16px; font-weight: 600; letter-spacing: 1px;">ВТБ</div><div style="font-size: 28px; font-weight: 800; color: white; margin-bottom: 12px; font-family: 'JetBrains Mono', monospace;">₽8,472</div><div style="font-size: 13px; color: rgba(255,255,255,0.8); font-family: 'JetBrains Mono', monospace;">•••• 7275</div></div>
+                    </div>
+                    <div style="background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 24px;">
+                        <div style="font-weight: 700; margin-bottom: 20px; font-size: 16px;">Последние транзакции</div>
+                        <div style="display: flex; flex-direction: column; gap: 12px;">
+                            <div style="display: flex; justify-content: space-between; padding: 14px; background: var(--bg); border-radius: 8px;"><div style="flex: 1;"><div style="font-weight: 600; margin-bottom: 4px;">Перевод • Мария С.</div><div style="font-size: 12px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace;">30 янв 2026, 14:23</div></div><div style="font-size: 18px; font-weight: 800; color: var(--alert); font-family: 'JetBrains Mono', monospace;">-15,000 ₽</div></div>
+                            <div style="display: flex; justify-content: space-between; padding: 14px; background: var(--bg); border-radius: 8px;"><div style="flex: 1;"><div style="font-weight: 600; margin-bottom: 4px;">Зачисление ЗП</div><div style="font-size: 12px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace;">28 янв 2026, 09:00</div></div><div style="font-size: 18px; font-weight: 800; color: var(--success); font-family: 'JetBrains Mono', monospace;">+120,000 ₽</div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Crypto Panel -->
+                <div class="panel" id="crypto" style="padding: 24px; overflow-y: auto;">
+                    <h2 style="font-size: 24px; font-weight: 800; margin-bottom: 24px;">₿ Криптовалюта</h2>
+                    <div style="display: flex; flex-direction: column; gap: 20px;">
+                        <div style="background: linear-gradient(135deg, #F7931A 0%, #FFA500 100%); border-radius: 16px; padding: 28px; cursor: pointer; box-shadow: 0 12px 32px rgba(247, 147, 26, 0.3);"><div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;"><div style="font-weight: 800; font-size: 20px; color: white;">₿ Bitcoin</div><div style="font-size: 12px; padding: 5px 12px; background: rgba(255,255,255,0.2); border-radius: 8px; color: white; font-weight: 700;">BTC</div></div><div style="font-size: 36px; font-weight: 800; color: white; margin-bottom: 16px; font-family: 'JetBrains Mono', monospace;">0.0847 BTC</div><div style="font-size: 14px; color: rgba(255,255,255,0.9); font-family: 'JetBrains Mono', monospace; word-break: break-all;">bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh</div></div>
+                        <div style="background: linear-gradient(135deg, #627EEA 0%, #8A92B2 100%); border-radius: 16px; padding: 28px; cursor: pointer; box-shadow: 0 12px 32px rgba(98, 126, 234, 0.3);"><div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;"><div style="font-weight: 800; font-size: 20px; color: white;">Ξ Ethereum</div><div style="font-size: 12px; padding: 5px 12px; background: rgba(255,255,255,0.2); border-radius: 8px; color: white; font-weight: 700;">ETH</div></div><div style="font-size: 36px; font-weight: 800; color: white; margin-bottom: 16px; font-family: 'JetBrains Mono', monospace;">2.47 ETH</div><div style="font-size: 14px; color: rgba(255,255,255,0.9); font-family: 'JetBrains Mono', monospace; word-break: break-all;">0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb</div></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Inspector -->
+        <aside class="inspector">
+            <div class="monitor">
+                <div class="monitor-header">
+                    <div class="monitor-title">Система</div>
+                    <div class="monitor-badge">ONLINE</div>
+                </div>
+                <div class="monitor-content">
+                    <div class="monitor-stat">
+                        <span class="monitor-label">CPU Load</span>
+                        <span class="monitor-value">24.3%</span>
+                    </div>
+                    <div class="monitor-stat">
+                        <span class="monitor-label">RAM Usage</span>
+                        <span class="monitor-value">3.2 GB</span>
+                    </div>
+                    <div class="monitor-stat">
+                        <span class="monitor-label">Storage</span>
+                        <span class="monitor-value">47/128 GB</span>
+                    </div>
+                    <div class="monitor-stat">
+                        <span class="monitor-label">Network</span>
+                        <span class="monitor-value">5G • 42 Mbps</span>
+                    </div>
+                    <div class="monitor-stat">
+                        <span class="monitor-label">Latency</span>
+                        <span class="monitor-value">24ms</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="monitor">
+                <div class="monitor-header">
+                    <div class="monitor-title">Соединение</div>
+                    <div class="monitor-badge" style="background: var(--success);">SECURE</div>
+                </div>
+                <div class="monitor-content">
+                    <div class="monitor-stat">
+                        <span class="monitor-label">Protocol</span>
+                        <span class="monitor-value">AES-256</span>
+                    </div>
+                    <div class="monitor-stat">
+                        <span class="monitor-label">Uptime</span>
+                        <span class="monitor-value">4h 23m</span>
+                    </div>
+                    <div class="monitor-stat">
+                        <span class="monitor-label">Data Transfer</span>
+                        <span class="monitor-value">847 MB</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="activity-log">
+                <div class="log-header">
+                    <div class="log-title">Журнал активности</div>
+                    <div class="log-filter">Все события</div>
+                </div>
+                <div class="log-entries" id="logEntries">
+                    <!-- Logs will be added dynamically -->
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Time update
+            function updateTime() {
+                const now = new Date();
+                document.getElementById('current-time').textContent = now.toLocaleTimeString('ru-RU');
+            }
+            updateTime();
+            setInterval(updateTime, 1000);
+
+            // Navigation
+            const navItems = document.querySelectorAll('.nav-item');
+            const panels = document.querySelectorAll('.panel');
+
+            navItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    const panelId = item.dataset.panel;
+                    
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    item.classList.add('active');
+                    
+                    panels.forEach(panel => panel.classList.remove('active'));
+                    const targetPanel = document.getElementById(panelId);
+                    if (targetPanel) {
+                        targetPanel.classList.add('active');
+                        addLogEntry(`Открыта панель: ${item.querySelector('.nav-text').textContent}`, 'info');
+                    }
+                });
+            });
+
+            // Log entry function
+            function addLogEntry(message, type = 'info') {
+                const logEntries = document.getElementById('logEntries');
+                const now = new Date();
+                const timeStr = now.toLocaleTimeString('ru-RU');
+                
+                const entry = document.createElement('div');
+                entry.className = `log-entry ${type}`;
+                entry.innerHTML = `
+                    <div class="log-entry-time">${timeStr}</div>
+                    <div class="log-entry-text">${message}</div>
+                `;
+                
+                logEntries.insertBefore(entry, logEntries.firstChild);
+                
+                while (logEntries.children.length > 50) {
+                    logEntries.removeChild(logEntries.lastChild);
+                }
+            }
+
+            // Initialize dashboard
+            function initDashboard() {
+                // Top contacts
+                const contacts = [
+                    { name: 'Мария Смирнова', count: 47, type: 'WhatsApp' },
+                    { name: 'Дмитрий Петров', count: 32, type: 'Telegram' },
+                    { name: 'Елена Короткова', count: 24, type: 'SMS' }
+                ];
+
+                const topContactsEl = document.getElementById('topContacts');
+                contacts.forEach(contact => {
+                    const el = document.createElement('div');
+                    el.style.cssText = 'display: flex; justify-content: space-between; padding: 12px; background: var(--bg); border-radius: 6px;';
+                    el.innerHTML = `
+                        <div>
+                            <div style="font-weight: 600;">${contact.name}</div>
+                            <div style="font-size: 11px; color: var(--text-dim);">${contact.type}</div>
+                        </div>
+                        <div style="font-size: 20px; font-weight: 800; color: var(--accent);">${contact.count}</div>
+                    `;
+                    topContactsEl.appendChild(el);
+                });
+
+                // Recent events
+                const events = [
+                    { text: 'Новое SMS сообщение', time: '2 мин назад', type: 'info' },
+                    { text: 'Входящий звонок', time: '15 мин назад', type: 'warning' },
+                    { text: 'Изменение GPS', time: '23 мин назад', type: 'info' }
+                ];
+
+                const recentEventsEl = document.getElementById('recentEvents');
+                events.forEach(event => {
+                    const el = document.createElement('div');
+                    el.style.cssText = 'padding: 12px; background: var(--bg); border-radius: 6px; border-left: 3px solid var(--accent);';
+                    el.innerHTML = `
+                        <div style="font-weight: 500; margin-bottom: 4px;">${event.text}</div>
+                        <div style="font-size: 11px; color: var(--text-dim);">${event.time}</div>
+                    `;
+                    recentEventsEl.appendChild(el);
+                });
+
+                // Activity chart
+                const canvas = document.getElementById('activityChart');
+                const ctx = canvas.getContext('2d');
+                canvas.width = canvas.offsetWidth * 2;
+                canvas.height = 400;
+
+                // Simple chart
+                const data = [45, 52, 38, 65, 72, 58, 85, 93, 78, 88, 95, 82];
+                const maxVal = Math.max(...data);
+                const barWidth = canvas.width / data.length;
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                data.forEach((val, i) => {
+                    const barHeight = (val / maxVal) * (canvas.height - 40);
+                    const x = i * barWidth;
+                    const y = canvas.height - barHeight - 20;
+
+                    const gradient = ctx.createLinearGradient(0, y, 0, canvas.height);
+                    gradient.addColorStop(0, 'rgba(0, 212, 255, 0.8)');
+                    gradient.addColorStop(1, 'rgba(0, 212, 255, 0.1)');
+
+                    ctx.fillStyle = gradient;
+                    ctx.fillRect(x + 10, y, barWidth - 20, barHeight);
+                });
+            }
+
+            // Initialize
+            initDashboard();
+            addLogEntry('Система инициализирована', 'info');
+            addLogEntry('Подключение к целевому устройству установлено', 'warning');
+            addLogEntry('Все модули загружены и готовы', 'info');
+
+            // Simulate activity
+            setInterval(() => {
+                const activities = [
+                    'Перехвачено новое сообщение',
+                    'Обновлены GPS координаты',
+                    'Синхронизация данных завершена',
+                    'Обнаружена активность приложения'
+                ];
+                const activity = activities[Math.floor(Math.random() * activities.length)];
+                addLogEntry(activity, Math.random() > 0.8 ? 'warning' : 'info');
+            }, 8000);
+
+            console.log('%c⚠️ AEGIS SECURITY WARNING', 'color: #ff4757; font-size: 20px; font-weight: bold;');
+            console.log('%cThis interface is for authorized personnel only.', 'color: #8b949e; font-size: 14px;');
+        });
+    </script>
+</body>
+</html>
