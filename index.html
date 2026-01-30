@@ -1719,7 +1719,12 @@
 
             // Thread switching
             document.querySelectorAll('.thread').forEach(thread => {
-                thread.addEventListener('click', function() {
+                thread.addEventListener('click', function(e) {
+                    // Check if clicked on phone number
+                    if (e.target.closest('.phone-number')) {
+                        return;
+                    }
+                    
                     // Remove active from all threads
                     document.querySelectorAll('.thread').forEach(t => t.classList.remove('active'));
                     // Add active to clicked thread
@@ -1750,6 +1755,73 @@
                     }
                 });
             });
+
+            // Phone number click handler - switch to calls
+            function handlePhoneClick(phone, name) {
+                // Switch to calls panel
+                document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+                document.querySelector('[data-panel="calls"]').classList.add('active');
+                
+                document.querySelectorAll('.panel').forEach(panel => panel.classList.remove('active'));
+                document.getElementById('calls').classList.add('active');
+                
+                // Show notification
+                showNotification(`История звонков: ${name}`, 'info');
+                addLogEntry(`Просмотр звонков: ${name} (${phone})`, 'info');
+                
+                // Highlight calls from this contact
+                setTimeout(() => {
+                    const callCards = document.querySelectorAll('.call-card');
+                    callCards.forEach(card => {
+                        const cardPhone = card.querySelector('[style*="JetBrains Mono"]');
+                        if (cardPhone && cardPhone.textContent.includes(phone.replace(/\s/g, ''))) {
+                            card.style.borderColor = 'var(--accent)';
+                            card.style.boxShadow = '0 0 20px rgba(0, 212, 255, 0.3)';
+                            card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }
+                    });
+                }, 100);
+            }
+
+            // Make all phone numbers clickable
+            setTimeout(() => {
+                document.querySelectorAll('[style*="JetBrains Mono"]').forEach(phoneEl => {
+                    const text = phoneEl.textContent.trim();
+                    if (text.startsWith('+7') && text.length > 10) {
+                        phoneEl.classList.add('phone-number');
+                        phoneEl.style.cursor = 'pointer';
+                        phoneEl.style.textDecoration = 'underline';
+                        phoneEl.style.textDecorationStyle = 'dotted';
+                        phoneEl.style.textUnderlineOffset = '3px';
+                        
+                        // Add hover effect
+                        phoneEl.addEventListener('mouseenter', function() {
+                            this.style.color = 'var(--accent)';
+                            this.style.textDecoration = 'underline solid';
+                        });
+                        phoneEl.addEventListener('mouseleave', function() {
+                            this.style.color = '';
+                            this.style.textDecoration = 'underline dotted';
+                        });
+                        
+                        // Add click handler
+                        phoneEl.addEventListener('click', function(e) {
+                            e.stopPropagation();
+                            const phone = this.textContent.trim();
+                            // Try to find name from parent
+                            let name = 'Контакт';
+                            const parentCard = this.closest('.call-card, [style*="flex"]');
+                            if (parentCard) {
+                                const nameEl = parentCard.querySelector('[style*="font-weight: 600"]');
+                                if (nameEl) {
+                                    name = nameEl.textContent.trim();
+                                }
+                            }
+                            handlePhoneClick(phone, name);
+                        });
+                    }
+                });
+            }, 500);
 
             // Call cards interactivity
             document.querySelectorAll('.call-card').forEach(card => {
