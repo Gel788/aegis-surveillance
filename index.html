@@ -1092,47 +1092,199 @@
                         </div>
                     </div>
                     <div style="display: flex; flex-direction: column; gap: 12px;">
+                        <!-- Call 1 - Recorded -->
+                        <div class="call-card-with-player" data-call-id="1" data-duration="523" style="background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 18px; transition: all 0.2s;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div style="display: flex; gap: 16px; align-items: center; flex: 1;">
+                                    <div style="width: 48px; height: 48px; background: var(--success); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; position: relative;">
+                                        <i class="fas fa-phone-alt"></i>
+                                        <div style="position: absolute; bottom: -2px; right: -2px; width: 18px; height: 18px; background: var(--alert); border-radius: 50%; border: 2px solid var(--panel); display: flex; align-items: center; justify-content: center; font-size: 8px; font-weight: 800; color: white;">REC</div>
+                                    </div>
+                                    <div style="flex: 1;">
+                                        <div style="font-weight: 600; margin-bottom: 4px;">Мария Смирнова</div>
+                                        <div style="font-size: 12px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace;">+7 926 847 29 47</div>
+                                    </div>
+                                </div>
+                                <div style="display: flex; gap: 12px; align-items: center;">
+                                    <div style="text-align: right;">
+                                        <div style="font-size: 12px; color: var(--text-dim); margin-bottom: 4px;">30 янв, 14:23</div>
+                                        <div style="font-size: 13px; color: var(--success); font-weight: 600;">Входящий • 8:43</div>
+                                    </div>
+                                    <button class="listen-btn" style="padding: 8px 16px; background: var(--accent); border: none; border-radius: 8px; color: white; cursor: pointer; font-size: 12px; font-weight: 600; transition: all 0.2s; white-space: nowrap;">
+                                        <i class="fas fa-headphones"></i> Прослушать
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="call-player" style="display: none; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border);">
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <button class="call-play-btn" style="width: 40px; height: 40px; background: var(--accent); border: none; border-radius: 50%; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: all 0.2s;">
+                                        <i class="fas fa-play"></i>
+                                    </button>
+                                    <div style="flex: 1;">
+                                        <div class="call-progress-bar" style="height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; margin-bottom: 6px; cursor: pointer;">
+                                            <div class="call-progress" style="height: 100%; width: 0%; background: var(--accent); transition: width 0.1s;"></div>
+                                        </div>
+                                        <div style="display: flex; justify-content: space-between; font-size: 10px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace;">
+                                            <span class="call-current-time">00:00</span>
+                                            <span class="call-total-time">08:43</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Call 2 - Recorded -->
+                        <div class="call-card-with-player" data-call-id="2" data-duration="204" style="background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 18px; transition: all 0.2s;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div style="display: flex; gap: 16px; align-items: center; flex: 1;">
+                                    <div style="width: 48px; height: 48px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; position: relative;">
+                                        <i class="fas fa-phone-volume"></i>
+                                        <div style="position: absolute; bottom: -2px; right: -2px; width: 18px; height: 18px; background: var(--alert); border-radius: 50%; border: 2px solid var(--panel); display: flex; align-items: center; justify-content: center; font-size: 8px; font-weight: 800; color: white;">REC</div>
+                                    </div>
+                                    <div style="flex: 1;">
+                                        <div style="font-weight: 600; margin-bottom: 4px;">Дмитрий Петров</div>
+                                        <div style="font-size: 12px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace;">+7 495 347 18 82</div>
+                                    </div>
+                                </div>
+                                <div style="display: flex; gap: 12px; align-items: center;">
+                                    <div style="text-align: right;">
+                                        <div style="font-size: 12px; color: var(--text-dim); margin-bottom: 4px;">30 янв, 11:15</div>
+                                        <div style="font-size: 13px; color: var(--accent); font-weight: 600;">Исходящий • 3:24</div>
+                                    </div>
+                                    <button class="listen-btn" style="padding: 8px 16px; background: var(--accent); border: none; border-radius: 8px; color: white; cursor: pointer; font-size: 12px; font-weight: 600; transition: all 0.2s; white-space: nowrap;">
+                                        <i class="fas fa-headphones"></i> Прослушать
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="call-player" style="display: none; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border);">
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <button class="call-play-btn" style="width: 40px; height: 40px; background: var(--accent); border: none; border-radius: 50%; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: all 0.2s;">
+                                        <i class="fas fa-play"></i>
+                                    </button>
+                                    <div style="flex: 1;">
+                                        <div class="call-progress-bar" style="height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; margin-bottom: 6px; cursor: pointer;">
+                                            <div class="call-progress" style="height: 100%; width: 0%; background: var(--accent); transition: width 0.1s;"></div>
+                                        </div>
+                                        <div style="display: flex; justify-content: space-between; font-size: 10px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace;">
+                                            <span class="call-current-time">00:00</span>
+                                            <span class="call-total-time">03:24</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Call 3 - Recorded -->
+                        <div class="call-card-with-player" data-call-id="3" data-duration="728" style="background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 18px; transition: all 0.2s;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div style="display: flex; gap: 16px; align-items: center; flex: 1;">
+                                    <div style="width: 48px; height: 48px; background: var(--success); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; position: relative;">
+                                        <i class="fas fa-phone-alt"></i>
+                                        <div style="position: absolute; bottom: -2px; right: -2px; width: 18px; height: 18px; background: var(--alert); border-radius: 50%; border: 2px solid var(--panel); display: flex; align-items: center; justify-content: center; font-size: 8px; font-weight: 800; color: white;">REC</div>
+                                    </div>
+                                    <div style="flex: 1;">
+                                        <div style="font-weight: 600; margin-bottom: 4px;">Елена Короткова</div>
+                                        <div style="font-size: 12px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace;">+7 903 724 56 19</div>
+                                    </div>
+                                </div>
+                                <div style="display: flex; gap: 12px; align-items: center;">
+                                    <div style="text-align: right;">
+                                        <div style="font-size: 12px; color: var(--text-dim); margin-bottom: 4px;">29 янв, 18:20</div>
+                                        <div style="font-size: 13px; color: var(--success); font-weight: 600;">Входящий • 12:08</div>
+                                    </div>
+                                    <button class="listen-btn" style="padding: 8px 16px; background: var(--accent); border: none; border-radius: 8px; color: white; cursor: pointer; font-size: 12px; font-weight: 600; transition: all 0.2s; white-space: nowrap;">
+                                        <i class="fas fa-headphones"></i> Прослушать
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="call-player" style="display: none; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border);">
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <button class="call-play-btn" style="width: 40px; height: 40px; background: var(--accent); border: none; border-radius: 50%; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: all 0.2s;">
+                                        <i class="fas fa-play"></i>
+                                    </button>
+                                    <div style="flex: 1;">
+                                        <div class="call-progress-bar" style="height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; margin-bottom: 6px; cursor: pointer;">
+                                            <div class="call-progress" style="height: 100%; width: 0%; background: var(--accent); transition: width 0.1s;"></div>
+                                        </div>
+                                        <div style="display: flex; justify-content: space-between; font-size: 10px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace;">
+                                            <span class="call-current-time">00:00</span>
+                                            <span class="call-total-time">12:08</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Call 4 - Recorded -->
+                        <div class="call-card-with-player" data-call-id="4" data-duration="157" style="background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 18px; transition: all 0.2s;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div style="display: flex; gap: 16px; align-items: center; flex: 1;">
+                                    <div style="width: 48px; height: 48px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; position: relative;">
+                                        <i class="fas fa-phone-volume"></i>
+                                        <div style="position: absolute; bottom: -2px; right: -2px; width: 18px; height: 18px; background: var(--alert); border-radius: 50%; border: 2px solid var(--panel); display: flex; align-items: center; justify-content: center; font-size: 8px; font-weight: 800; color: white;">REC</div>
+                                    </div>
+                                    <div style="flex: 1;">
+                                        <div style="font-weight: 600; margin-bottom: 4px;">Игорь Козлов</div>
+                                        <div style="font-size: 12px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace;">+7 916 582 41 33</div>
+                                    </div>
+                                </div>
+                                <div style="display: flex; gap: 12px; align-items: center;">
+                                    <div style="text-align: right;">
+                                        <div style="font-size: 12px; color: var(--text-dim); margin-bottom: 4px;">29 янв, 09:42</div>
+                                        <div style="font-size: 13px; color: var(--accent); font-weight: 600;">Исходящий • 2:37</div>
+                                    </div>
+                                    <button class="listen-btn" style="padding: 8px 16px; background: var(--accent); border: none; border-radius: 8px; color: white; cursor: pointer; font-size: 12px; font-weight: 600; transition: all 0.2s; white-space: nowrap;">
+                                        <i class="fas fa-headphones"></i> Прослушать
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="call-player" style="display: none; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border);">
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <button class="call-play-btn" style="width: 40px; height: 40px; background: var(--accent); border: none; border-radius: 50%; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; transition: all 0.2s;">
+                                        <i class="fas fa-play"></i>
+                                    </button>
+                                    <div style="flex: 1;">
+                                        <div class="call-progress-bar" style="height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; margin-bottom: 6px; cursor: pointer;">
+                                            <div class="call-progress" style="height: 100%; width: 0%; background: var(--accent); transition: width 0.1s;"></div>
+                                        </div>
+                                        <div style="display: flex; justify-content: space-between; font-size: 10px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace;">
+                                            <span class="call-current-time">00:00</span>
+                                            <span class="call-total-time">02:37</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Call 5 - Regular (no recording) -->
                         <div class="call-card" style="background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 18px; cursor: pointer; transition: all 0.2s;">
                             <div style="display: flex; justify-content: space-between; align-items: center;">
                                 <div style="display: flex; gap: 16px; align-items: center;">
                                     <div style="width: 48px; height: 48px; background: var(--success); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px;"><i class="fas fa-phone-alt"></i></div>
                                     <div>
-                                        <div style="font-weight: 600; margin-bottom: 4px;">Мария Смирнова</div>
-                                        <div style="font-size: 12px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace;">+7 926 847 29 47</div>
+                                        <div style="font-weight: 600; margin-bottom: 4px;">Анна Волкова</div>
+                                        <div style="font-size: 12px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace;">+7 985 412 78 91</div>
                                     </div>
                                 </div>
                                 <div style="text-align: right;">
-                                    <div style="font-size: 12px; color: var(--text-dim); margin-bottom: 4px;">30 янв, 14:23</div>
-                                    <div style="font-size: 13px; color: var(--success); font-weight: 600;">Входящий • 8:43</div>
+                                    <div style="font-size: 12px; color: var(--text-dim); margin-bottom: 4px;">28 янв, 15:18</div>
+                                    <div style="font-size: 13px; color: var(--success); font-weight: 600;">Входящий • 0:48</div>
                                 </div>
                             </div>
                         </div>
-                        <div class="call-card" style="background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 18px; cursor: pointer; transition: all 0.2s;">
-                            <div style="display: flex; justify-content: space-between; align-items: center;">
-                                <div style="display: flex; gap: 16px; align-items: center;">
-                                    <div style="width: 48px; height: 48px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px;"><i class="fas fa-phone-volume"></i></div>
-                                    <div>
-                                        <div style="font-weight: 600; margin-bottom: 4px;">Дмитрий Петров</div>
-                                        <div style="font-size: 12px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace;">+7 495 347 18 82</div>
-                                    </div>
-                                </div>
-                                <div style="text-align: right;">
-                                    <div style="font-size: 12px; color: var(--text-dim); margin-bottom: 4px;">30 янв, 11:15</div>
-                                    <div style="font-size: 13px; color: var(--accent); font-weight: 600;">Исходящий • 3:24</div>
-                                </div>
-                            </div>
-                        </div>
+
+                        <!-- Call 6 - Missed (no player) -->
                         <div class="call-card" style="background: var(--panel); border: 1px solid var(--alert); border-radius: 12px; padding: 18px; cursor: pointer; transition: all 0.2s; box-shadow: 0 0 20px var(--alert-glow);">
                             <div style="display: flex; justify-content: space-between; align-items: center;">
                                 <div style="display: flex; gap: 16px; align-items: center;">
                                     <div style="width: 48px; height: 48px; background: var(--alert); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px;"><i class="fas fa-phone-slash"></i></div>
                                     <div>
                                         <div style="font-weight: 600; margin-bottom: 4px;">Неизвестный номер</div>
-                                        <div style="font-size: 12px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace;">+7 903 724 56 19</div>
+                                        <div style="font-size: 12px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace;">+7 999 123 45 67</div>
                                     </div>
                                 </div>
                                 <div style="text-align: right;">
-                                    <div style="font-size: 12px; color: var(--text-dim); margin-bottom: 4px;">29 янв, 22:47</div>
+                                    <div style="font-size: 12px; color: var(--text-dim); margin-bottom: 4px;">28 янв, 01:34</div>
                                     <div style="font-size: 13px; color: var(--alert); font-weight: 600;">Пропущенный</div>
                                 </div>
                             </div>
@@ -2220,6 +2372,137 @@
                     const url = this.querySelector('div div:first-child').textContent;
                     showNotification(`История: ${url}`, 'info');
                     addLogEntry(`Просмотр истории: ${url}`, 'info');
+                });
+            });
+
+            // ============ CALL HISTORY PLAYER ============
+            let currentCallPlayer = null;
+            let callPlaybackInterval = null;
+
+            document.querySelectorAll('.call-card-with-player').forEach(card => {
+                const listenBtn = card.querySelector('.listen-btn');
+                const player = card.querySelector('.call-player');
+                const playBtn = card.querySelector('.call-play-btn');
+                const progress = card.querySelector('.call-progress');
+                const progressBar = card.querySelector('.call-progress-bar');
+                const currentTimeEl = card.querySelector('.call-current-time');
+                const duration = parseInt(card.dataset.duration);
+                
+                // Show/hide player
+                listenBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const isVisible = player.style.display !== 'none';
+                    
+                    if (isVisible) {
+                        player.style.display = 'none';
+                        card.style.borderColor = 'var(--border)';
+                        card.style.boxShadow = '';
+                        this.innerHTML = '<i class="fas fa-headphones"></i> Прослушать';
+                        
+                        // Stop playback if playing
+                        if (playBtn.dataset.playing === 'true') {
+                            playBtn.innerHTML = '<i class="fas fa-play"></i>';
+                            playBtn.dataset.playing = 'false';
+                            playBtn.style.background = 'var(--accent)';
+                            clearInterval(callPlaybackInterval);
+                        }
+                    } else {
+                        player.style.display = 'block';
+                        card.style.borderColor = 'var(--accent)';
+                        card.style.boxShadow = '0 4px 20px rgba(0, 212, 255, 0.2)';
+                        this.innerHTML = '<i class="fas fa-times"></i> Скрыть';
+                        
+                        const name = card.querySelector('[style*="font-weight: 600"]').textContent;
+                        showNotification(`Открыт плеер: ${name}`, 'info');
+                    }
+                });
+
+                // Hover effect on button
+                listenBtn.addEventListener('mouseenter', function() {
+                    this.style.background = 'var(--success)';
+                    this.style.transform = 'translateY(-2px)';
+                });
+                listenBtn.addEventListener('mouseleave', function() {
+                    this.style.background = 'var(--accent)';
+                    this.style.transform = '';
+                });
+
+                // Play/Pause
+                playBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const isPlaying = this.dataset.playing === 'true';
+                    
+                    // Stop other players
+                    if (!isPlaying && currentCallPlayer && currentCallPlayer !== card) {
+                        const otherPlayBtn = currentCallPlayer.querySelector('.call-play-btn');
+                        const otherProgress = currentCallPlayer.querySelector('.call-progress');
+                        const otherTimeEl = currentCallPlayer.querySelector('.call-current-time');
+                        otherPlayBtn.innerHTML = '<i class="fas fa-play"></i>';
+                        otherPlayBtn.dataset.playing = 'false';
+                        otherPlayBtn.style.background = 'var(--accent)';
+                        otherProgress.style.width = '0%';
+                        otherTimeEl.textContent = '00:00';
+                        clearInterval(callPlaybackInterval);
+                    }
+                    
+                    if (isPlaying) {
+                        // Pause
+                        this.innerHTML = '<i class="fas fa-play"></i>';
+                        this.dataset.playing = 'false';
+                        this.style.background = 'var(--accent)';
+                        clearInterval(callPlaybackInterval);
+                        showNotification('Воспроизведение остановлено', 'info');
+                    } else {
+                        // Play
+                        this.innerHTML = '<i class="fas fa-pause"></i>';
+                        this.dataset.playing = 'true';
+                        this.style.background = 'var(--success)';
+                        currentCallPlayer = card;
+                        
+                        const name = card.querySelector('[style*="font-weight: 600"]').textContent;
+                        const phone = card.querySelector('[style*="JetBrains Mono"]').textContent;
+                        showNotification(`Воспроизведение: ${name}`, 'success');
+                        addLogEntry(`Прослушивание звонка: ${name} (${phone})`, 'info');
+                        
+                        // Get current progress
+                        const currentWidth = parseFloat(progress.style.width) || 0;
+                        let currentSeconds = Math.floor((currentWidth / 100) * duration);
+                        
+                        callPlaybackInterval = setInterval(() => {
+                            currentSeconds++;
+                            const percentage = (currentSeconds / duration) * 100;
+                            progress.style.width = percentage + '%';
+                            
+                            const displayMins = Math.floor(currentSeconds / 60);
+                            const displaySecs = currentSeconds % 60;
+                            currentTimeEl.textContent = `${String(displayMins).padStart(2, '0')}:${String(displaySecs).padStart(2, '0')}`;
+                            
+                            if (currentSeconds >= duration) {
+                                clearInterval(callPlaybackInterval);
+                                playBtn.innerHTML = '<i class="fas fa-play"></i>';
+                                playBtn.dataset.playing = 'false';
+                                playBtn.style.background = 'var(--accent)';
+                                progress.style.width = '0%';
+                                currentTimeEl.textContent = '00:00';
+                                showNotification('Воспроизведение завершено', 'info');
+                            }
+                        }, 1000);
+                    }
+                });
+
+                // Click on progress bar to seek
+                progressBar.addEventListener('click', function(e) {
+                    const rect = this.getBoundingClientRect();
+                    const clickX = e.clientX - rect.left;
+                    const percentage = (clickX / rect.width) * 100;
+                    progress.style.width = percentage + '%';
+                    
+                    const newSeconds = Math.floor((percentage / 100) * duration);
+                    const displayMins = Math.floor(newSeconds / 60);
+                    const displaySecs = newSeconds % 60;
+                    currentTimeEl.textContent = `${String(displayMins).padStart(2, '0')}:${String(displaySecs).padStart(2, '0')}`;
+                    
+                    showNotification('Перемотка записи', 'info');
                 });
             });
 
