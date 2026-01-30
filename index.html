@@ -1578,8 +1578,299 @@
                 addLogEntry(activity, Math.random() > 0.8 ? 'warning' : 'info');
             }, 8000);
 
+            // ============ INTERACTIVE ELEMENTS ============
+            
+            // Notification system
+            function showNotification(message, type = 'info') {
+                const notification = document.createElement('div');
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 70px;
+                    right: 20px;
+                    padding: 16px 24px;
+                    background: ${type === 'alert' ? 'var(--alert)' : type === 'success' ? 'var(--success)' : 'var(--accent)'};
+                    color: white;
+                    border-radius: 8px;
+                    font-size: 14px;
+                    font-weight: 600;
+                    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+                    z-index: 10000;
+                    animation: slideIn 0.3s ease;
+                `;
+                notification.textContent = message;
+                document.body.appendChild(notification);
+
+                const style = document.createElement('style');
+                style.textContent = `
+                    @keyframes slideIn {
+                        from { transform: translateX(400px); opacity: 0; }
+                        to { transform: translateX(0); opacity: 1; }
+                    }
+                `;
+                if (!document.querySelector('style[data-notification]')) {
+                    style.setAttribute('data-notification', 'true');
+                    document.head.appendChild(style);
+                }
+
+                setTimeout(() => {
+                    notification.style.animation = 'slideOut 0.3s ease';
+                    setTimeout(() => notification.remove(), 300);
+                }, 3000);
+            }
+
+            // Call cards interactivity
+            document.querySelectorAll('.call-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    this.style.transform = 'scale(0.98)';
+                    setTimeout(() => this.style.transform = '', 100);
+                    showNotification('Детали звонка открыты', 'info');
+                    addLogEntry('Просмотр деталей звонка', 'info');
+                });
+                card.addEventListener('mouseenter', function() {
+                    this.style.borderColor = 'var(--accent)';
+                    this.style.boxShadow = '0 4px 20px rgba(0, 212, 255, 0.2)';
+                });
+                card.addEventListener('mouseleave', function() {
+                    this.style.borderColor = 'var(--border)';
+                    this.style.boxShadow = '';
+                });
+            });
+
+            // Photo gallery
+            document.querySelectorAll('.photo-item').forEach((photo, index) => {
+                photo.addEventListener('click', function() {
+                    showNotification(`Фото ${index + 1} открыто`, 'info');
+                    addLogEntry(`Просмотр фотографии #${index + 1}`, 'info');
+                });
+                photo.addEventListener('mouseenter', function() {
+                    this.style.transform = 'scale(1.05)';
+                    this.style.boxShadow = '0 8px 24px rgba(0, 0, 0, 0.3)';
+                });
+                photo.addEventListener('mouseleave', function() {
+                    this.style.transform = '';
+                    this.style.boxShadow = '';
+                });
+            });
+
+            // File items
+            document.querySelectorAll('.file-item').forEach(file => {
+                const btn = file.querySelector('.btn');
+                if (btn) {
+                    btn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        const fileName = file.querySelector('div div').textContent;
+                        this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Загрузка...';
+                        setTimeout(() => {
+                            this.innerHTML = '<i class="fas fa-check"></i> Готово!';
+                            this.style.background = 'var(--success)';
+                            showNotification(`Файл загружен: ${fileName}`, 'success');
+                            addLogEntry(`Скачан файл: ${fileName}`, 'alert');
+                            setTimeout(() => {
+                                this.innerHTML = 'Скачать';
+                                this.style.background = '';
+                            }, 2000);
+                        }, 1500);
+                    });
+                }
+                file.addEventListener('click', function() {
+                    const fileName = this.querySelector('div div').textContent;
+                    showNotification(`Просмотр: ${fileName}`, 'info');
+                });
+            });
+
+            // App cards
+            document.querySelectorAll('.app-card').forEach(app => {
+                app.addEventListener('click', function() {
+                    const appName = this.querySelector('div:last-child').textContent;
+                    showNotification(`Приложение: ${appName}`, 'info');
+                    addLogEntry(`Перехват данных из ${appName}`, 'warning');
+                });
+                app.addEventListener('mouseenter', function() {
+                    const icon = this.querySelector('div:first-child');
+                    icon.style.transform = 'scale(1.1)';
+                });
+                app.addEventListener('mouseleave', function() {
+                    const icon = this.querySelector('div:first-child');
+                    icon.style.transform = '';
+                });
+            });
+
+            // Contact cards (in contacts panel)
+            document.querySelectorAll('#contacts > div > div > div').forEach(contact => {
+                contact.addEventListener('click', function() {
+                    showNotification('Контакт выбран', 'info');
+                    addLogEntry('Просмотр контакта', 'info');
+                });
+                contact.addEventListener('mouseenter', function() {
+                    this.style.borderColor = 'var(--accent)';
+                    this.style.transform = 'translateY(-4px)';
+                    this.style.boxShadow = '0 8px 24px rgba(0, 212, 255, 0.2)';
+                });
+                contact.addEventListener('mouseleave', function() {
+                    this.style.borderColor = 'var(--border)';
+                    this.style.transform = '';
+                    this.style.boxShadow = '';
+                });
+            });
+
+            // Email items
+            document.querySelectorAll('#email > div > div').forEach(email => {
+                email.addEventListener('click', function() {
+                    showNotification('Email открыт', 'info');
+                    addLogEntry('Просмотр письма', 'info');
+                    this.style.opacity = '0.7';
+                });
+            });
+
+            // Camera feeds
+            document.querySelectorAll('.feed-card').forEach(feed => {
+                feed.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                    const label = this.querySelector('div:first-child > div:first-child').textContent;
+                    if (this.classList.contains('active')) {
+                        this.style.borderColor = 'var(--alert)';
+                        showNotification(`${label} активирована`, 'success');
+                        addLogEntry(`Камера активирована: ${label}`, 'warning');
+                    } else {
+                        this.style.borderColor = 'var(--border)';
+                        showNotification(`${label} деактивирована`, 'info');
+                    }
+                });
+            });
+
+            // Crypto cards
+            document.querySelectorAll('#crypto > div > div').forEach(card => {
+                card.addEventListener('click', function() {
+                    const crypto = this.querySelector('div div').textContent;
+                    showNotification(`Кошелек: ${crypto}`, 'info');
+                    addLogEntry(`Доступ к кошельку: ${crypto}`, 'alert');
+                });
+                card.addEventListener('dblclick', function() {
+                    showNotification('Адрес скопирован', 'success');
+                    addLogEntry('Скопирован адрес криптокошелька', 'alert');
+                });
+            });
+
+            // Banking cards
+            document.querySelectorAll('#banking > div:first-child > div').forEach(card => {
+                card.addEventListener('click', function() {
+                    const bank = this.querySelector('div:first-child').textContent;
+                    const balance = this.querySelector('div:nth-child(2)').textContent;
+                    showNotification(`${bank}: ${balance}`, 'info');
+                    addLogEntry(`Просмотр счета: ${bank}`, 'info');
+                });
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-4px) scale(1.02)';
+                });
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = '';
+                });
+            });
+
+            // Credentials cards
+            document.querySelectorAll('#credentials > div > div').forEach(card => {
+                card.addEventListener('click', function() {
+                    const service = this.querySelector('div div').textContent;
+                    showNotification(`Учетные данные: ${service}`, 'info');
+                    addLogEntry(`Доступ к ${service}`, 'warning');
+                });
+                card.addEventListener('dblclick', function() {
+                    showNotification('Пароль скопирован', 'success');
+                    addLogEntry('Скопирован пароль', 'alert');
+                });
+            });
+
+            // Browser history items
+            document.querySelectorAll('#browser > div > div').forEach(item => {
+                item.addEventListener('click', function() {
+                    const url = this.querySelector('div div:first-child').textContent;
+                    showNotification(`История: ${url}`, 'info');
+                    addLogEntry(`Просмотр истории: ${url}`, 'info');
+                });
+            });
+
+            // Keylogger entries animation
+            setInterval(() => {
+                const keylogContainer = document.querySelector('#keylogEntries');
+                if (keylogContainer && Math.random() > 0.7) {
+                    const apps = ['WhatsApp', 'Telegram', 'Safari', 'Notes'];
+                    const texts = ['привет как дела?', 'когда встретимся?', 'отправил документы'];
+                    const app = apps[Math.floor(Math.random() * apps.length)];
+                    const text = texts[Math.floor(Math.random() * texts.length)];
+                    const time = new Date().toLocaleTimeString('ru-RU');
+                    
+                    const entry = document.createElement('div');
+                    entry.style.cssText = 'background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 18px; animation: slideIn 0.3s ease;';
+                    entry.innerHTML = `
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                            <span style="font-size: 12px; color: var(--accent); font-weight: 700;">${app}</span>
+                            <span style="font-size: 11px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace;">${time}</span>
+                        </div>
+                        <div style="font-family: 'JetBrains Mono', monospace; color: var(--text); line-height: 1.8; font-size: 14px;">${text}</div>
+                    `;
+                    keylogContainer.insertBefore(entry, keylogContainer.firstChild);
+                    addLogEntry(`Перехвачен ввод: ${app}`, 'warning');
+                    
+                    while (keylogContainer.children.length > 10) {
+                        keylogContainer.removeChild(keylogContainer.lastChild);
+                    }
+                }
+            }, 15000);
+
+            // Toolbar buttons
+            const toolbarBtns = document.querySelectorAll('.toolbar .btn');
+            toolbarBtns[0].addEventListener('click', function() {
+                showNotification('Начат экспорт данных...', 'info');
+                addLogEntry('Экспорт всех данных инициирован', 'warning');
+                setTimeout(() => {
+                    showNotification('Экспорт завершен!', 'success');
+                    addLogEntry('Экспорт завершен: target_47293.zip', 'info');
+                }, 2000);
+            });
+
+            toolbarBtns[1].addEventListener('click', function() {
+                if (!this.dataset.active) {
+                    this.dataset.active = 'true';
+                    this.style.background = 'var(--alert)';
+                    this.style.color = 'white';
+                    this.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Тревога активна';
+                    showNotification('⚠️ РЕЖИМ ТРЕВОГИ АКТИВИРОВАН', 'alert');
+                    addLogEntry('ТРЕВОГА: Активирован режим повышенного контроля', 'alert');
+                } else {
+                    delete this.dataset.active;
+                    this.style.background = '';
+                    this.style.color = '';
+                    this.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Тревога';
+                    showNotification('Режим тревоги отключен', 'info');
+                    addLogEntry('Режим тревоги деактивирован', 'info');
+                }
+            });
+
+            toolbarBtns[2].addEventListener('click', function() {
+                if (!this.dataset.recording) {
+                    this.dataset.recording = 'true';
+                    this.innerHTML = '<i class="fas fa-stop"></i> Остановить';
+                    showNotification('Начата запись всех данных', 'success');
+                    addLogEntry('Начата полная запись: видео, аудио, данные', 'warning');
+                } else {
+                    delete this.dataset.recording;
+                    this.innerHTML = '<i class="fas fa-circle"></i> Запись';
+                    showNotification('Запись остановлена', 'info');
+                    addLogEntry('Запись остановлена и сохранена', 'info');
+                }
+            });
+
+            // Add hover effects to all cards
+            document.querySelectorAll('.metric-card, .chart-container').forEach(card => {
+                card.style.cursor = 'pointer';
+                card.addEventListener('click', function() {
+                    showNotification('Детали метрики', 'info');
+                });
+            });
+
             console.log('%c⚠️ AEGIS SECURITY WARNING', 'color: #ff4757; font-size: 20px; font-weight: bold;');
             console.log('%cThis interface is for authorized personnel only.', 'color: #8b949e; font-size: 14px;');
+            console.log('%c✅ All 16 modules loaded and operational', 'color: #2ed573; font-size: 14px; font-weight: bold;');
         });
     </script>
 </body>
