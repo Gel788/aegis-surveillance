@@ -1266,11 +1266,128 @@
                             <div style="text-align: center;"><div style="font-size: 24px; font-weight: 800; color: var(--warning); font-family: 'JetBrains Mono', monospace; margin-bottom: 4px;">00:24</div><div style="font-size: 11px; color: var(--text-dim); text-transform: uppercase;">Запись</div></div>
                         </div>
                     </div>
-                    <div style="background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 20px;">
+                    <div style="background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 20px;">
                         <div style="font-weight: 700; margin-bottom: 16px;">Транскрипция в реальном времени</div>
                         <div style="display: flex; flex-direction: column; gap: 12px;">
                             <div style="padding: 12px; background: var(--bg); border-radius: 8px; border-left: 3px solid var(--accent);"><div style="font-size: 11px; color: var(--text-dim); margin-bottom: 6px; font-family: 'JetBrains Mono', monospace;">14:28:14</div><div style="line-height: 1.6;">"Привет, как дела? Звоню по поводу встречи..."</div></div>
                             <div style="padding: 12px; background: var(--bg); border-radius: 8px; border-left: 3px solid var(--accent);"><div style="font-size: 11px; color: var(--text-dim); margin-bottom: 6px; font-family: 'JetBrains Mono', monospace;">14:29:42</div><div style="line-height: 1.6;">"Да, конечно. Встретимся завтра в офисе."</div></div>
+                        </div>
+                    </div>
+
+                    <!-- Recordings List -->
+                    <div style="background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 20px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                            <div style="font-weight: 700;">Записи звонков</div>
+                            <div style="font-size: 11px; color: var(--text-dim);">Всего: <span id="recordings-count">3</span></div>
+                        </div>
+                        <div id="recordings-list" style="display: flex; flex-direction: column; gap: 12px;">
+                            <!-- Recording 1 -->
+                            <div class="recording-item" data-recording="1" style="background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 16px; cursor: pointer; transition: all 0.2s;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                    <div style="display: flex; gap: 12px; align-items: center;">
+                                        <div style="width: 40px; height: 40px; background: var(--alert); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white;"><i class="fas fa-microphone"></i></div>
+                                        <div>
+                                            <div style="font-weight: 600; margin-bottom: 2px;">Мария Смирнова</div>
+                                            <div style="font-size: 11px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace;">+7 926 847 29 47</div>
+                                        </div>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <div style="font-size: 12px; color: var(--text-dim); margin-bottom: 2px;">30 янв, 14:32</div>
+                                        <div style="font-size: 13px; color: var(--success); font-weight: 600; font-family: 'JetBrains Mono', monospace;">8:43</div>
+                                    </div>
+                                </div>
+                                <div class="recording-player" style="display: none; padding-top: 12px; border-top: 1px solid var(--border);">
+                                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                                        <button class="play-btn" style="width: 48px; height: 48px; background: var(--accent); border: none; border-radius: 50%; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px; transition: all 0.2s;">
+                                            <i class="fas fa-play"></i>
+                                        </button>
+                                        <div style="flex: 1;">
+                                            <div class="progress-bar" style="height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; margin-bottom: 8px;">
+                                                <div class="progress" style="height: 100%; width: 0%; background: var(--accent); transition: width 0.1s;"></div>
+                                            </div>
+                                            <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace;">
+                                                <span class="current-time">00:00</span>
+                                                <span class="total-time">08:43</span>
+                                            </div>
+                                        </div>
+                                        <button class="download-rec-btn" style="padding: 8px 16px; background: var(--panel); border: 1px solid var(--border); border-radius: 6px; color: var(--text); cursor: pointer; font-size: 12px; transition: all 0.2s;">
+                                            <i class="fas fa-download"></i> Скачать
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Recording 2 -->
+                            <div class="recording-item" data-recording="2" style="background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 16px; cursor: pointer; transition: all 0.2s;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                    <div style="display: flex; gap: 12px; align-items: center;">
+                                        <div style="width: 40px; height: 40px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white;"><i class="fas fa-microphone"></i></div>
+                                        <div>
+                                            <div style="font-weight: 600; margin-bottom: 2px;">Дмитрий Петров</div>
+                                            <div style="font-size: 11px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace;">+7 495 347 18 82</div>
+                                        </div>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <div style="font-size: 12px; color: var(--text-dim); margin-bottom: 2px;">30 янв, 11:15</div>
+                                        <div style="font-size: 13px; color: var(--success); font-weight: 600; font-family: 'JetBrains Mono', monospace;">3:24</div>
+                                    </div>
+                                </div>
+                                <div class="recording-player" style="display: none; padding-top: 12px; border-top: 1px solid var(--border);">
+                                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                                        <button class="play-btn" style="width: 48px; height: 48px; background: var(--accent); border: none; border-radius: 50%; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px; transition: all 0.2s;">
+                                            <i class="fas fa-play"></i>
+                                        </button>
+                                        <div style="flex: 1;">
+                                            <div class="progress-bar" style="height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; margin-bottom: 8px;">
+                                                <div class="progress" style="height: 100%; width: 0%; background: var(--accent); transition: width 0.1s;"></div>
+                                            </div>
+                                            <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace;">
+                                                <span class="current-time">00:00</span>
+                                                <span class="total-time">03:24</span>
+                                            </div>
+                                        </div>
+                                        <button class="download-rec-btn" style="padding: 8px 16px; background: var(--panel); border: 1px solid var(--border); border-radius: 6px; color: var(--text); cursor: pointer; font-size: 12px; transition: all 0.2s;">
+                                            <i class="fas fa-download"></i> Скачать
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Recording 3 -->
+                            <div class="recording-item" data-recording="3" style="background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 16px; cursor: pointer; transition: all 0.2s;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                                    <div style="display: flex; gap: 12px; align-items: center;">
+                                        <div style="width: 40px; height: 40px; background: var(--success); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white;"><i class="fas fa-microphone"></i></div>
+                                        <div>
+                                            <div style="font-weight: 600; margin-bottom: 2px;">Елена Короткова</div>
+                                            <div style="font-size: 11px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace;">+7 903 724 56 19</div>
+                                        </div>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <div style="font-size: 12px; color: var(--text-dim); margin-bottom: 2px;">29 янв, 18:20</div>
+                                        <div style="font-size: 13px; color: var(--success); font-weight: 600; font-family: 'JetBrains Mono', monospace;">12:08</div>
+                                    </div>
+                                </div>
+                                <div class="recording-player" style="display: none; padding-top: 12px; border-top: 1px solid var(--border);">
+                                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                                        <button class="play-btn" style="width: 48px; height: 48px; background: var(--accent); border: none; border-radius: 50%; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px; transition: all 0.2s;">
+                                            <i class="fas fa-play"></i>
+                                        </button>
+                                        <div style="flex: 1;">
+                                            <div class="progress-bar" style="height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; margin-bottom: 8px;">
+                                                <div class="progress" style="height: 100%; width: 0%; background: var(--accent); transition: width 0.1s;"></div>
+                                            </div>
+                                            <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--text-dim); font-family: 'JetBrains Mono', monospace;">
+                                                <span class="current-time">00:00</span>
+                                                <span class="total-time">12:08</span>
+                                            </div>
+                                        </div>
+                                        <button class="download-rec-btn" style="padding: 8px 16px; background: var(--panel); border: 1px solid var(--border); border-radius: 6px; color: var(--text); cursor: pointer; font-size: 12px; transition: all 0.2s;">
+                                            <i class="fas fa-download"></i> Скачать
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -2103,6 +2220,136 @@
                     const url = this.querySelector('div div:first-child').textContent;
                     showNotification(`История: ${url}`, 'info');
                     addLogEntry(`Просмотр истории: ${url}`, 'info');
+                });
+            });
+
+            // ============ AUDIO RECORDINGS ============
+            let currentlyPlaying = null;
+            let playbackInterval = null;
+
+            document.querySelectorAll('.recording-item').forEach(item => {
+                const player = item.querySelector('.recording-player');
+                const playBtn = item.querySelector('.play-btn');
+                const progress = item.querySelector('.progress');
+                const currentTimeEl = item.querySelector('.current-time');
+                const downloadBtn = item.querySelector('.download-rec-btn');
+                
+                // Toggle player visibility
+                item.addEventListener('click', function(e) {
+                    if (e.target.closest('.play-btn') || e.target.closest('.download-rec-btn')) {
+                        return;
+                    }
+                    
+                    const isVisible = player.style.display !== 'none';
+                    if (isVisible) {
+                        player.style.display = 'none';
+                        this.style.borderColor = 'var(--border)';
+                    } else {
+                        player.style.display = 'block';
+                        this.style.borderColor = 'var(--accent)';
+                        this.style.boxShadow = '0 4px 20px rgba(0, 212, 255, 0.2)';
+                    }
+                });
+
+                // Hover effect
+                item.addEventListener('mouseenter', function() {
+                    if (player.style.display === 'none') {
+                        this.style.borderColor = 'var(--accent)';
+                        this.style.transform = 'translateY(-2px)';
+                    }
+                });
+                item.addEventListener('mouseleave', function() {
+                    if (player.style.display === 'none') {
+                        this.style.borderColor = 'var(--border)';
+                        this.style.transform = '';
+                    }
+                });
+
+                // Play/Pause
+                playBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const isPlaying = this.dataset.playing === 'true';
+                    
+                    // Stop other players
+                    if (!isPlaying && currentlyPlaying && currentlyPlaying !== item) {
+                        const otherPlayBtn = currentlyPlaying.querySelector('.play-btn');
+                        otherPlayBtn.innerHTML = '<i class="fas fa-play"></i>';
+                        otherPlayBtn.dataset.playing = 'false';
+                        otherPlayBtn.style.background = 'var(--accent)';
+                        clearInterval(playbackInterval);
+                    }
+                    
+                    if (isPlaying) {
+                        // Pause
+                        this.innerHTML = '<i class="fas fa-play"></i>';
+                        this.dataset.playing = 'false';
+                        this.style.background = 'var(--accent)';
+                        clearInterval(playbackInterval);
+                        showNotification('Воспроизведение остановлено', 'info');
+                    } else {
+                        // Play
+                        this.innerHTML = '<i class="fas fa-pause"></i>';
+                        this.dataset.playing = 'true';
+                        this.style.background = 'var(--success)';
+                        currentlyPlaying = item;
+                        
+                        const name = item.querySelector('[style*="font-weight: 600"]').textContent;
+                        showNotification(`Воспроизведение: ${name}`, 'success');
+                        addLogEntry(`Прослушивание записи: ${name}`, 'info');
+                        
+                        // Simulate playback
+                        const totalTime = item.querySelector('.total-time').textContent;
+                        const [mins, secs] = totalTime.split(':').map(Number);
+                        const totalSeconds = mins * 60 + secs;
+                        let currentSeconds = 0;
+                        
+                        playbackInterval = setInterval(() => {
+                            currentSeconds++;
+                            const percentage = (currentSeconds / totalSeconds) * 100;
+                            progress.style.width = percentage + '%';
+                            
+                            const displayMins = Math.floor(currentSeconds / 60);
+                            const displaySecs = currentSeconds % 60;
+                            currentTimeEl.textContent = `${String(displayMins).padStart(2, '0')}:${String(displaySecs).padStart(2, '0')}`;
+                            
+                            if (currentSeconds >= totalSeconds) {
+                                clearInterval(playbackInterval);
+                                playBtn.innerHTML = '<i class="fas fa-play"></i>';
+                                playBtn.dataset.playing = 'false';
+                                playBtn.style.background = 'var(--accent)';
+                                progress.style.width = '0%';
+                                currentTimeEl.textContent = '00:00';
+                                showNotification('Воспроизведение завершено', 'info');
+                            }
+                        }, 1000);
+                    }
+                });
+
+                // Download button
+                downloadBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const name = item.querySelector('[style*="font-weight: 600"]').textContent;
+                    const time = item.querySelector('.total-time').textContent;
+                    
+                    this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Загрузка...';
+                    this.disabled = true;
+                    
+                    setTimeout(() => {
+                        this.innerHTML = '<i class="fas fa-check"></i> Готово!';
+                        this.style.background = 'var(--success)';
+                        this.style.borderColor = 'var(--success)';
+                        this.style.color = 'white';
+                        showNotification(`Запись скачана: ${name}`, 'success');
+                        addLogEntry(`Скачана запись звонка: ${name} (${time})`, 'alert');
+                        
+                        setTimeout(() => {
+                            this.innerHTML = '<i class="fas fa-download"></i> Скачать';
+                            this.style.background = '';
+                            this.style.borderColor = '';
+                            this.style.color = '';
+                            this.disabled = false;
+                        }, 2000);
+                    }, 1500);
                 });
             });
 
